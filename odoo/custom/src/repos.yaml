@@ -14,3 +14,252 @@
     - ocb $ODOO_VERSION
     # Example of a merge of the PR with the number <PR>
     # - oca refs/pull/<PR>/head
+
+# OdooEduERP:
+#   defaults:
+#     depth: 1
+#   remotes:
+#     origin: https://github.com/JayVora-SerpentCS/OdooEduERP
+#   target: origin $ODOO_VERSION
+#   merges:
+#     - origin $ODOO_VERSION
+
+# Openeducat:
+#   defaults:
+#     depth: 1
+#   remotes:
+#     origin: https://github.com/openeducat/openeducat_erp.git
+#   target: origin $ODOO_VERSION
+#   merges:
+#     - origin $ODOO_VERSION
+
+# HotelManagement:
+#   defaults:
+#     depth: 1
+#   remotes:
+#     origin: https://github.com/JayVora-SerpentCS/OdooHotelManagementSystem.git
+#   target: origin $ODOO_VERSION
+#   merges:
+#     - origin $ODOO_VERSION
+
+Smile:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/Smile-SA/odoo_addons.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
+
+SerpentCS:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/JayVora-SerpentCS/SerpentCS_Contributions.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
+
+OpenHRMS:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/CybroOdoo/OpenHRMS.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
+
+CybroAddons:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/CybroOdoo/CybroAddons.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
+
+odoomates:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/odoomates/odooapps.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
+
+muk_base:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/muk-it/muk_base.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
+
+# muk_web:
+#   defaults:
+#     depth: 1
+#   remotes:
+#     origin: https://github.com/muk-it/muk_web.git
+#   target: origin $ODOO_VERSION
+#   merges:
+#     - origin $ODOO_VERSION
+
+# muk_website:
+#   defaults:
+#     depth: 1
+#   remotes:
+#     origin: https://github.com/muk-it/muk_website.git
+#   target: origin $ODOO_VERSION
+#   merges:
+#     - origin $ODOO_VERSION
+
+# muk_misc:
+#   defaults:
+#     depth: 1
+#   remotes:
+#     origin: https://github.com/muk-it/muk_misc.git
+#   target: origin $ODOO_VERSION
+#   merges:
+#     - origin $ODOO_VERSION
+
+# muk_bundles:
+#   defaults:
+#     depth: 1
+#   remotes:
+#     origin: https://github.com/muk-it/muk_bundles.git
+#   target: origin $ODOO_VERSION
+#   merges:
+#     - origin $ODOO_VERSION
+
+# muk_dms:
+#   defaults:
+#     depth: 1
+#   remotes:
+#     origin: https://github.com/muk-it/muk_dms.git
+#     # tecnativa: https://github.com/Tecnativa/partner-contact.git
+#   target: origin $ODOO_VERSION
+#   merges:
+#     - origin $ODOO_VERSION
+#     # - origin refs/pull/1007/head # web_responsive search
+#     # - tecnativa 11.0-some_addon-custom # Branch for this customer only
+
+#https://odoo-devops.readthedocs.io/en/latest/
+saas_addons:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/it-projects-llc/saas-addons.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
+    # - origin refs/pull/1007/head # web_responsive search
+    # - tecnativa 11.0-some_addon-custom # Branch for this customer only
+
+# saas_clusters:
+#   defaults:
+#     depth: 1
+#   remotes:
+#     origin: https://github.com/itpp-labs/saas-clusters.git
+#   target: origin $ODOO_VERSION
+#   merges:
+#     - origin $ODOO_VERSION
+
+access_addons:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/itpp-labs/access-addons.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
+
+itpp_website_addons:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/itpp-labs/website-addons.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
+
+itpp_sync_addons:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/itpp-labs/sync-addons.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
+
+itpp_misc_addons:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/itpp-labs/misc-addons.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
+
+itpp_mail_addons:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/itpp-labs/mail-addons.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
+
+itpp_pos_addons:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/itpp-labs/pos-addons.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
+
+c2c_cloud_platform:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/camptocamp/odoo-cloud-platform.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
+
+# echarts:
+#   defaults:
+#     depth: 100
+#   remotes:
+#     origin: git@gitlab.com:oondeo/odoo/echarts.git
+#   target: origin $ODOO_VERSION
+#   merges:
+#     - origin $ODOO_VERSION
+
+# builder:
+#   defaults:
+#     depth: 100
+#   remotes:
+#     origin: git@gitlab.com:amon-ra/builder.git
+#   target: origin $ODOO_VERSION
+#   merges:
+#     - origin $ODOO_VERSION
+
+# snippet_html:
+#   defaults:
+#     depth: 100
+#   remotes:
+#     origin: git@gitlab.com:oondeo/odoo/website_snippet_html.git
+#   target: origin $ODOO_VERSION
+#   merges:
+#     - origin $ODOO_VERSION
+
+# comunity_portal:
+#   defaults:
+#     depth: 100
+#   remotes:
+#     origin: git@gitlab.com:oondeo/scout10/Community_Portal.git
+#   target: origin $ODOO_VERSION
+#   merges:
+#     - origin $ODOO_VERSION
