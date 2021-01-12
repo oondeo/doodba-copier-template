@@ -136,7 +136,7 @@ odoo_listdb:
   default: false
   type: bool
   help: >-
-    Do you want to list databases publicly?
+    Do you want to list databases publicly?. Some backup modules does not work with this set to false
 
 odoo_oci_image:
   type: str
@@ -194,6 +194,7 @@ gitlab_url:
     💡 If you don't use Gitlab, leave this empty and ignore all other Gitlab questions.
 
     Example: `https://gitlab.com/Tecnativa/your-doodba-project`.
+
 
 domains_prod:
   type: yaml
@@ -430,6 +431,12 @@ smtp_canonical_domains:
 
     Example: [examplemail.com, example.org]
 
+use_prod_minio:
+  default: false
+  type: bool
+  help: >-
+    Deploy minio config in production
+
 backup_dst:
   type: str
   help: >-
@@ -506,3 +513,4 @@ backup_passphrase:
     restore backups.
 
     Which will be your backups passphrase?
+

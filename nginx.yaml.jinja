@@ -1,0 +1,40 @@
+{%- import "_macros.jinja" as macros -%}
+version: "2.4"
+
+services:
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - le-conf:/etc/letsencrypt
+      - le-www:/var/www/letsencrypt
+    entrypoint:
+      "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!};
+      done;'"
+
+  nginx:
+    image: bitnami/nginx
+    env_file:
+      - .docker/redis.env
+    volumes:
+      - ./nginx.conf:/opt/bitnami/nginx/conf/server_blocks/${DOMAIN_PROD}.conf:ro
+      - ./odoo:/opt/odoo:z
+      - le-conf:/etc/letsencrypt
+      - le-www:/var/www/letsencrypt
+    #command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+
+    networks:
+      default:
+      public:
+    ports:
+      - "80:1080"
+      - "443:10443"
+
+networks:
+  public:
+  default:
+    external:
+      name: net-{{ macros.first_main_domain(domain_groups_list) | replace(".","-") }}
+
+volumes:
+  le-conf:
+  le-www:

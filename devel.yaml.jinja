@@ -10,6 +10,19 @@
 version: "2.4"
 
 services:
+  minio_proxy:
+    image: tecnativa/whitelist
+    depends_on:
+      - minio
+    networks: &public
+      default:
+      public:
+    ports:
+      - "127.0.0.1:9000:9000"
+    environment:
+      PORT: "9000"
+      TARGET: minio
+
   odoo_proxy:
     image: tecnativa/whitelist
     depends_on:
@@ -51,6 +64,11 @@ services:
       WDB_WEB_PORT: "{{ macros.version_major(odoo_version) }}984"
       # To avoid installing demo data export DOODBA_WITHOUT_DEMO=all
       WITHOUT_DEMO: "${DOODBA_WITHOUT_DEMO-false}"
+      AWS_HOST: "${AWS_HOST:-minio}"
+      AWS_REGION: "${AWS_REGION}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID:-odoo"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY:-odoopassword}"
+      AWS_BUCKETNAME: "${AWS_BUCKETNAME:-dev}"
     volumes:
       - ./odoo/custom:/opt/odoo/custom:ro,z
       - ./odoo/auto:/opt/odoo/auto:rw,z
@@ -84,6 +102,20 @@ services:
       POSTGRES_DB: *dbname
       POSTGRES_PASSWORD: odoopassword
   {%- endif %}
+
+  redis:
+    image: bitnami/redis:5.0.9
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+
+  minio:
+    image: bitnami/minio:2020.6.22-debian-10-r10
+    volumes:
+      - s3:/data:z
+    environment:
+      MINIO_ACCESS_KEY: odoo
+      MINIO_SECRET_KEY: odoopassword
+      MINIO_DEFAULT_BUCKETS: dev
 
   pgweb:
     image: sosedoff/pgweb
@@ -132,3 +164,4 @@ networks:
 volumes:
   filestore:
   db:
+  s3:

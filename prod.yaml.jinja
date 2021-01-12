@@ -13,6 +13,8 @@ services:
     env_file:
       - .docker/odoo.env
       - .docker/db-access.env
+      - .docker/minio.env
+      - .docker/redis.env
     environment:
       DOODBA_ENVIRONMENT: "${DOODBA_ENVIRONMENT-prod}"
       INITIAL_LANG: "{{ odoo_initial_lang }}"
@@ -87,6 +89,7 @@ services:
 
 networks:
   default:
+    name: net-{{ macros.first_main_domain(domain_groups_list) | replace(".","-") }}
     driver_opts:
       encrypted: 1
   {%- if odoo_proxy == "traefik" %}

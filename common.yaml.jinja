@@ -18,6 +18,17 @@ services:
       PGUSER: &dbuser "{{ postgres_username }}"
       DB_FILTER: "{{ odoo_dbfilter }}"
       PROXY_MODE: "{{ (odoo_proxy is not none)|string|lower }}"
+      ODOO_RUNNING_ENV: "${DOODBA_ENVIRONMENT-prod}"
+      ODOO_DEV: "${ODOO_DEV}"
+      ODOO_LOG_HANDLER: "${ODOO_LOG_HANDLER-:INFO}"
+      ODOO_SESSION_REDIS_HOST: "${ODOO_SESSION_REDIS_HOST-redis}"
+      ODOO_SESSION_REDIS_PREFIX: "${ODOO_SESSION_REDIS_PREFIX-odoo}"
+      ODOO_SESSION_REDIS: 1
+      AWS_HOST: "${AWS_HOST:-minio}"
+      AWS_REGION: "${AWS_REGION}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID:-$MINIO_ACCESS_KEY}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY:-$MINIO_SECRET_KEY}"
+      AWS_BUCKETNAME: "${AWS_BUCKETNAME:-$MINIO_BUCKETNAME}"
     {%- if smtp_canonical_default %}
     hostname: "{{ smtp_canonical_default }}"
     {%- endif %}

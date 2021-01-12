@@ -1,0 +1,17 @@
+{%- import "_macros.jinja" as macros -%}
+version: "2.4"
+
+services:
+  redis:
+    restart: always
+    image: bitnami/redis:5.0.9
+    env_file:
+      - .docker/redis.env
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+
+networks:
+  public:
+  default:
+    external:
+      name: net-{{ macros.first_main_domain(domain_groups_list) | replace(".","-") }}

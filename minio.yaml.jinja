@@ -1,0 +1,20 @@
+{%- import "_macros.jinja" as macros -%}
+version: "2.4"
+
+services:
+  minio:
+    restart: always
+    image: bitnami/minio:2020.6.22-debian-10-r10
+    env_file:
+      - .docker/minio.env
+    volumes:
+      - s3:/data:z
+
+volumes:
+  s3:
+
+networks:
+  public:
+  default:
+    external:
+      name: net-{{ macros.first_main_domain(domain_groups_list) | replace(".","-") }}

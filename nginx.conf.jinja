@@ -1,0 +1,150 @@
+{%- import "_macros.jinja" as macros -%}
+
+{# Get a espace separate list of domains.
+
+#}
+{%- macro domain_list(domain_groups_list) %}
+    {%- set ret =  '' %}
+    {%- call(domain) domains_loop_single(domain_groups_list) %}
+        {%- if not domain.group.redirect_to and not domain.group.path_prefixes %}
+            {%- set ret = ret + domain.host %}
+        {%- endif %}
+    {%- endcall %}
+    {{ ret }}
+{%- endmacro %}
+
+{%- macro odoo(domain_groups_list, paths_without_crawlers) %}
+server {
+    listen 0.0.0.0:1080 default_server;
+    location ^~ /.well-known/acme-challenge/ {
+                    access_log off;
+                    log_not_found off;
+                    root /var/lib/letsencrypt;
+                    autoindex off;
+                    index index.html;
+                    try_files $uri $uri/ =404;
+    }
+    return 301 https://{{ macros.first_main_domain(domain_groups_list) }}$request_uri;
+}
+server {
+    listen 0.0.0.0:10443 ssl http2 default_server;
+    server_name {{ domain_list(domain_groups_list) }};
+
+    ssl_certificate /etc/letsencrypt/live/{{ macros.first_main_domain(domain_groups_list) }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ macros.first_main_domain(domain_groups_list) }}/privkey.pem;
+    #access_log /opt/bitnami/nginx/logs/scout10_access.log;
+    #error_log /opt/bitnami/nginx/logs/scout10_error.log;
+
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;  # drop SSLv3 (POODLE vulnerability)
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!3DES:!MD5:!PSK';
+
+    location ^~ /.well-known/acme-challenge/ {
+                    access_log off;
+                    log_not_found off;
+                    root /var/lib/letsencrypt;
+                    autoindex off;
+                    index index.html;
+                    try_files $uri $uri/ =404;
+    }
+    proxy_read_timeout 720s;
+    proxy_connect_timeout 720s;
+    proxy_send_timeout 720s;
+    proxy_buffering on;
+    proxy_buffers 16 8k;
+    proxy_buffer_size 16k;
+    proxy_set_header HOST $http_host;
+    #proxy_set_header Referer '';
+    #proxy_set_header Origin '';
+    proxy_set_header X-NginX-Proxy true;
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Real-IP $remote_addr;
+
+   rewrite ^/api/auth/token.*$ /api/auth/token?login=$arg_login&password=$arg_password&db=scout10.com? last;
+
+   location / {
+     proxy_redirect off;
+     proxy_pass http://odoo:8069;
+       #     add_header Access-Control-Allow-Origin "*";
+       #     add_header Access-Control-Allow-Credentials 'true';
+   }
+
+   location /longpolling {
+       proxy_pass http://odoo:8072;
+       proxy_redirect off;
+   }
+   location /web/database/manager { return 404; }
+   location ~* /web/image/ {
+       proxy_cache_valid 200 301 302 304 10m;
+       proxy_buffering    on;
+       expires 864000;
+       proxy_pass http://odoo:8069;
+  }
+   location ~* /static/ {
+       proxy_cache_valid 200 301 302 304 90m;
+       proxy_buffering    on;
+       expires 864000;
+       proxy_pass http://odoo:8069;
+  }
+
+}
+
+ {%- if use_prod_minio %}
+server {
+    listen 0.0.0.0:10443 ssl http2;
+    server_name s3.{{ macros.first_main_domain(domain_groups_list) }};
+
+    ssl_certificate /etc/letsencrypt/live/s3.{{ macros.first_main_domain(domain_groups_list) }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/s3.{{ macros.first_main_domain(domain_groups_list) }}/privkey.pem;
+    #access_log /opt/bitnami/nginx/logs/scout10_access.log;
+    #error_log /opt/bitnami/nginx/logs/scout10_error.log;
+
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;  # drop SSLv3 (POODLE vulnerability)
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!3DES:!MD5:!PSK';
+
+    location ^~ /.well-known/acme-challenge/ {
+                    access_log off;
+                    log_not_found off;
+                    root /var/lib/letsencrypt;
+                    autoindex off;
+                    index index.html;
+                    try_files $uri $uri/ =404;
+    }
+    proxy_set_header HOST $http_host;
+    proxy_set_header X-NginX-Proxy true;
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Real-IP $remote_addr;
+
+    # To allow special characters in headers
+    ignore_invalid_headers off;
+    # Allow any size file to be uploaded.
+    # Set to a value such as 1000m; to restrict file size to a specific value
+    client_max_body_size 0;
+    # To disable buffering
+    proxy_buffering off;
+
+    location / {
+        proxy_connect_timeout 300;
+        # Default is HTTP/1, keepalive is only enabled in HTTP/1.1
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        chunked_transfer_encoding off;
+
+        proxy_pass http://minio:9000; # If you are using docker-compose this would be the hostname i.e. minio
+        # Health Check endpoint might go here. See https://www.nginx.com/resources/wiki/modules/healthcheck/
+        # /minio/health/live;
+    }
+
+
+}
+{%- endif %}
+{%- endmacro %}
