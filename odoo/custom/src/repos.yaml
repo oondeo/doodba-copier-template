@@ -263,3 +263,12 @@ c2c_cloud_platform:
 #   target: origin $ODOO_VERSION
 #   merges:
 #     - origin $ODOO_VERSION
+
+crnd-addons:
+  defaults:
+    depth: 100
+  remotes:
+    origin: https://github.com/crnd-inc/generic-addons.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
