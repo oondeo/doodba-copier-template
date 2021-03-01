@@ -7,7 +7,6 @@
 # ONLY:
 #   LANG:
 #     - 'es_ES.UTF-8'
-l10n-spain: ["*"]
 # --- oca ---
 account-analytic: ["*"]
 account-financial-reporting: ["*"]
