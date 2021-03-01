@@ -10,19 +10,6 @@
 version: "2.4"
 
 services:
-  minio_proxy:
-    image: tecnativa/whitelist
-    depends_on:
-      - minio
-    networks: &public
-      default:
-      public:
-    ports:
-      - "127.0.0.1:9000:9000"
-    environment:
-      PORT: "9000"
-      TARGET: minio
-
   odoo_proxy:
     image: tecnativa/whitelist
     depends_on:
@@ -36,6 +23,17 @@ services:
     environment:
       PORT: "6899 8069"
       TARGET: odoo
+
+  minio_proxy:
+    image: tecnativa/whitelist
+    depends_on:
+      - minio
+    networks: *public
+    ports:
+      - "127.0.0.1:9000:9000"
+    environment:
+      PORT: "9000"
+      TARGET: minio
 
   odoo:
     extends:
@@ -66,7 +64,7 @@ services:
       WITHOUT_DEMO: "${DOODBA_WITHOUT_DEMO-false}"
       AWS_HOST: "${AWS_HOST:-minio}"
       AWS_REGION: "${AWS_REGION}"
-      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID:-odoo"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID:-odo}"
       AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY:-odoopassword}"
       AWS_BUCKETNAME: "${AWS_BUCKETNAME:-dev}"
     volumes:
