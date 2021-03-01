@@ -42,14 +42,15 @@
 #   merges:
 #     - origin $ODOO_VERSION
 
-Smile:
-  defaults:
-    depth: 1
-  remotes:
-    origin: https://github.com/Smile-SA/odoo_addons.git
-  target: origin $ODOO_VERSION
-  merges:
-    - origin $ODOO_VERSION
+## To many duplicate content with OCA
+# Smile:
+#   defaults:
+#     depth: 1
+#   remotes:
+#     origin: https://github.com/Smile-SA/odoo_addons.git
+#   target: origin $ODOO_VERSION
+#   merges:
+#     - origin $ODOO_VERSION
 
 SerpentCS:
   defaults:
@@ -96,25 +97,25 @@ muk_base:
   merges:
     - origin $ODOO_VERSION
 
-# muk_web:
-#   defaults:
-#     depth: 1
-#   remotes:
-#     origin: https://github.com/muk-it/muk_web.git
-#   target: origin $ODOO_VERSION
-#   merges:
-#     - origin $ODOO_VERSION
+muk_web:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/muk-it/muk_web.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
 
-# muk_website:
-#   defaults:
-#     depth: 1
-#   remotes:
-#     origin: https://github.com/muk-it/muk_website.git
-#   target: origin $ODOO_VERSION
-#   merges:
-#     - origin $ODOO_VERSION
+muk_website:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/muk-it/muk_website.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
 
-# muk_misc:
+# muk_misc: # No 13.0 branch
 #   defaults:
 #     depth: 1
 #   remotes:
@@ -123,7 +124,7 @@ muk_base:
 #   merges:
 #     - origin $ODOO_VERSION
 
-# muk_bundles:
+# muk_bundles: # No 13.0 branch
 #   defaults:
 #     depth: 1
 #   remotes:
@@ -132,7 +133,7 @@ muk_base:
 #   merges:
 #     - origin $ODOO_VERSION
 
-# muk_dms:
+# muk_dms:  # No 13.0 branch
 #   defaults:
 #     depth: 1
 #   remotes:
@@ -145,7 +146,7 @@ muk_base:
 #     # - tecnativa 11.0-some_addon-custom # Branch for this customer only
 
 #https://odoo-devops.readthedocs.io/en/latest/
-saas_addons:
+itpp_saas_addons:
   defaults:
     depth: 1
   remotes:
@@ -165,7 +166,7 @@ saas_addons:
 #   merges:
 #     - origin $ODOO_VERSION
 
-access_addons:
+itpp_access_addons:
   defaults:
     depth: 1
   remotes:

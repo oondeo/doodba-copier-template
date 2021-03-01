@@ -1,0 +1,6 @@
+build-essential
+libmariadb-dev
+libxmlsec1-dev
+libldap2-dev
+libzbar-dev
+swig

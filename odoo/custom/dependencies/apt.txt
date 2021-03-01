@@ -1,0 +1,4 @@
+libzbar0
+libmariadb3
+libxmlsec1
+libldap-2.4-2

@@ -1,3 +1,57 @@
 git+https://github.com/OCA/openupgradelib.git@master
+num2words
 unicodecsv
 unidecode
+sqlalchemy
+mysqlclient
+radicale<3.0.0
+pymssql<3.0
+endesive
+pycryptodome
+paramiko
+gevent
+tz
+requests
+pandas<0.25
+phonenumbers
+oauthlib
+redis
+psycogreen
+vobject
+qrcode
+zeep
+xlrd
+xlsxwriter
+ptpython
+boto3
+simplejson
+validate_email
+Pygments
+# auth_signup_verify_email
+email_validator
+# auth_saml
+lasso
+# auth_totp
+pyotp
+# auth_u2f
+python-u2flib-server
+responses
+bcrypt
+botocore
+mechanize
+git+https://github.com/ozgur/python-linkedin
+mechanicalsoup
+uwsgi
+wand
+imageio
+moviepy
+pyzbar
+pdf2image
+vbuild
+networkx
+cachetools
+python-slugify
+requests-mock
+pretty_bad_protocol
+altair
+python-json-logger
