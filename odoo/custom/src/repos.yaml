@@ -273,3 +273,12 @@ crnd-addons:
   target: origin $ODOO_VERSION
   merges:
     - origin $ODOO_VERSION
+
+osi-addons:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/ursais/osi-addons.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION

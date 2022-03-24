@@ -116,3 +116,7 @@ itpp_sync_addons: ["*"]
 itpp_access_addons: ["*"]
 # saas_clusters: ["*"]
 itpp_saas_addons: ["*"]
+
+crnd-addons: ["*"]
+
+osi-addons: ["*"]

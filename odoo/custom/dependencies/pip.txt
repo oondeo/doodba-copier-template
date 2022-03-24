@@ -55,3 +55,4 @@ requests-mock
 pretty_bad_protocol
 altair
 python-json-logger
+pysftp
