@@ -75,6 +75,17 @@ def remove_vscode_launch_and_tasks(c, dst_path):
 
 
 @task
+def remove_vscode_settings(c, dst_path):
+    """Remove .vscode/{launch,tasks}.json file.
+
+    Launch configurations are now generated in the doodba.*.code-workspace file.
+    """
+    garbage = Path(dst_path, ".vscode", "settings.json")
+    if garbage.is_file():
+        garbage.unlink()
+
+
+@task
 def update_domains_structure(c, dst_path, answers_rel_path):
     """Migrates from v1 to v2 domain structure.
 
@@ -119,3 +130,66 @@ def update_domains_structure(c, dst_path, answers_rel_path):
     answers_path.write_text(yaml.safe_dump(answers_yaml))
     # Remove .env file
     Path(dst_path, ".env").unlink()
+
+
+@task
+def update_no_license(c, dst_path, answers_rel_path):
+    """Update projects with no license.
+
+    In template version < 3.0.0, no license was `None`. In 3.0.0 it was changed
+    to `""`, to make it compatible with Copier 6, but that made it not work
+    fine with Copier 5. So, in version 3.0.1 it was changed to `"no_license"`.
+    This value will always be a string, no matter the parser, and should make
+    the parameter work fine in any Copier version.
+
+    This migrates old answers to this new format.
+    """
+    answers_path = Path(dst_path, answers_rel_path)
+    answers_yaml = _load_yaml(answers_path)
+    if (
+        not answers_yaml.get("project_license")
+        or answers_yaml.get("project_license") == "no_license"
+    ):
+        answers_yaml["project_license"] = "no_license"
+        answers_path.write_text(yaml.safe_dump(answers_yaml))
+        # Delete LICENSE if it existed but was empty
+        license = Path(dst_path, "LICENSE")
+        try:
+            if not license.read_text().strip():
+                license.unlink()
+        except FileNotFoundError:
+            pass  # LICENSE does not exist, and that's good
+
+
+@task
+def db_filter_prefix_default(c, dst_path, answers_rel_path):
+    """Update projects with default DB filter including main DB prefix.
+
+    In template version < 4.0.0, the default value for odoo_dbfilter was ".*"
+    always. Starting with 4.0.0, the default value will be applied only to
+    production environments and will include the main DB name as a prefix.
+
+    Update answers for projects that didn't change the default.
+    """
+    answers_path = Path(dst_path, answers_rel_path)
+    answers_yaml = _load_yaml(answers_path)
+    postgres_dbname = answers_yaml.get("postgres_dbname")
+    if answers_yaml.get("odoo_dbfilter") == ".*" and postgres_dbname:
+        # Replace odoo_dbfilter value in answers file
+        answers_path.write_text(
+            answers_path.read_text().replace(
+                "odoo_dbfilter: .*", f"odoo_dbfilter: ^{postgres_dbname}"
+            )
+        )
+        common_path = Path(dst_path, "common.yaml")
+        common_path.write_text(
+            common_path.read_text().replace(
+                'DBS_TO_INCLUDE: ".*"', f'DBS_TO_INCLUDE: "^{postgres_dbname}"'
+            )
+        )
+        prod_path = Path(dst_path, "prod.yaml")
+        prod_path.write_text(
+            prod_path.read_text().replace(
+                'DB_FILTER: ".*"', f'DB_FILTER: "^{postgres_dbname}"'
+            )
+        )
