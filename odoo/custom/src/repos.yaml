@@ -42,16 +42,6 @@
 #   merges:
 #     - origin $ODOO_VERSION
 
-## To many duplicate content with OCA
-# Smile:
-#   defaults:
-#     depth: 1
-#   remotes:
-#     origin: https://github.com/Smile-SA/odoo_addons.git
-#   target: origin $ODOO_VERSION
-#   merges:
-#     - origin $ODOO_VERSION
-
 SerpentCS:
   defaults:
     depth: 1
@@ -88,32 +78,32 @@ odoomates:
   merges:
     - origin $ODOO_VERSION
 
-muk_base:
-  defaults:
-    depth: 1
-  remotes:
-    origin: https://github.com/muk-it/muk_base.git
-  target: origin $ODOO_VERSION
-  merges:
-    - origin $ODOO_VERSION
+# muk_base:
+#   defaults:
+#     depth: 1
+#   remotes:
+#     origin: https://github.com/muk-it/muk_base.git
+#   target: origin $ODOO_VERSION
+#   merges:
+#     - origin $ODOO_VERSION
 
-muk_web:
-  defaults:
-    depth: 1
-  remotes:
-    origin: https://github.com/muk-it/muk_web.git
-  target: origin $ODOO_VERSION
-  merges:
-    - origin $ODOO_VERSION
+# muk_web:
+#   defaults:
+#     depth: 1
+#   remotes:
+#     origin: https://github.com/muk-it/muk_web.git
+#   target: origin $ODOO_VERSION
+#   merges:
+#     - origin $ODOO_VERSION
 
-muk_website:
-  defaults:
-    depth: 1
-  remotes:
-    origin: https://github.com/muk-it/muk_website.git
-  target: origin $ODOO_VERSION
-  merges:
-    - origin $ODOO_VERSION
+# muk_website:
+#   defaults:
+#     depth: 1
+#   remotes:
+#     origin: https://github.com/muk-it/muk_website.git
+#   target: origin $ODOO_VERSION
+#   merges:
+#     - origin $ODOO_VERSION
 
 # muk_misc: # No 13.0 branch
 #   defaults:
@@ -238,15 +228,6 @@ c2c_cloud_platform:
 #   merges:
 #     - origin $ODOO_VERSION
 
-# builder:
-#   defaults:
-#     depth: 100
-#   remotes:
-#     origin: git@gitlab.com:amon-ra/builder.git
-#   target: origin $ODOO_VERSION
-#   merges:
-#     - origin $ODOO_VERSION
-
 # snippet_html:
 #   defaults:
 #     depth: 100
@@ -256,14 +237,24 @@ c2c_cloud_platform:
 #   merges:
 #     - origin $ODOO_VERSION
 
-# comunity_portal:
+# builder:
 #   defaults:
 #     depth: 100
 #   remotes:
-#     origin: git@gitlab.com:oondeo/scout10/Community_Portal.git
+#     origin: git@gitlab.com:amon-ra/builder.git
 #   target: origin $ODOO_VERSION
 #   merges:
 #     - origin $ODOO_VERSION
+
+## To many duplicate content with OCA
+smile_addons:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/oondeo/smile_odoo_addons.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
 
 crnd-addons:
   defaults:

@@ -19,12 +19,9 @@ account-reconcile: ["*"]
 bank-payment: ["*"]
 bank-statement-import: ["*"]
 brand: ["*"]
-# builder: ["*"]
 business-requirement: ["*"]
-c2c_cloud_platform: ["*"]
 commission: ["*"]
 community-data-files: ["*"]
-# comunity_portal: ["*"]
 connector: ["*"]
 connector-telephony: ["*"]
 contract: ["*"]
@@ -35,7 +32,6 @@ data-protection: ["*"]
 delivery-carrier: ["*"]
 # department: ["*"]
 dms: ["*"]
-# echarts: ["*"]
 e-commerce: ["*"]
 edi: ["*"]
 event: ["*"]
@@ -57,7 +53,6 @@ manufacture: ["*"]
 margin-analysis: ["*"]
 mis-builder: ["*"]
 multi-company: ["*"]
-odoomates: ["*"]
 operating-unit: ["*"]
 partner-contact: ["*"]
 pos: ["*"]
@@ -77,7 +72,6 @@ server-brand: ["*"]
 server-env: ["*"]
 server-tools: ["*"]
 server-ux: ["*"]
-# snippet_html: ["*"]
 social: ["*"]
 stock-logistics-barcode: ["*"]
 stock-logistics-workflow: ["*"]
@@ -94,29 +88,49 @@ website: ["*"]
 website-cms: ["*"]
 website-themes: ["*"]
 
-#--- not working - smile_base (auto_install) -
-# Smile: ["*"]
+---
+c2c_cloud_platform: ["*"]
+# snippet_html: ["*"]
+# builder: ["*"]
+# echarts: ["*"]
+
+---
 # --- cybrosys hr ----
 CybroAddons: ["*"]
 OpenHRMS: ["*"]
-# --- muk dms ---
-muk_base: ["*"]
-muk_web: ["*"]
-muk_website: ["*"]
-# muk_misc: ["*"]
-# muk_bundles: ["*"]
-# muk_dms: ["*"]
+
 #---- it projects llc-----
 itpp_pos_addons: ["*"]
 itpp_mail_addons: ["*"]
 itpp_misc_addons: ["*"]
 itpp_sync_addons: ["*"]
-
 # itpp_website_addons: ["*"] # Conflict website_event_require_login with event repo
 itpp_access_addons: ["*"]
 # saas_clusters: ["*"]
 itpp_saas_addons: ["*"]
 
+#------------ other tested ------
 crnd-addons: ["*"]
-
 osi-addons: ["*"]
+odoomates: ["*"]
+Smile:
+  - smile_access_control
+  # - smile_api_rest
+  - smile_assets_version
+  - smile_audit
+  - smile_base_partner # missing in v14
+  - smile_many2many_tags_clickable
+  - smile_data_integration
+  - smile_perf_analyzer
+  - smile_upgrade
+#--- not working - smile_base (auto_install) -
+# comunity_portal: ["*"]
+# Smile: ["*"]
+
+# --- muk dms ---
+# muk_base: ["*"]
+# muk_web: ["*"]
+# muk_website: ["*"]
+# muk_misc: ["*"]
+# muk_bundles: ["*"]
+# muk_dms: ["*"]
