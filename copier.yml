@@ -356,7 +356,7 @@ minio_version:
   help: >-
     Which Minio version do you want to deploy?
   choices:
-    I will use an external PostgreSQL server: null
+    I will use an external Minio server: null
     "2022.4.9": 2022.4.9
     "2022.4.8": 2022.4.8
     "2022": 2022
@@ -366,8 +366,8 @@ redis_version:
   help: >-
     Which Redis version do you want to deploy?
   choices:
-    I will use an external PostgreSQL server: null
-    "6.0.16": 60.0.16
+    I will use an external Redis server: null
+    "6.0.16": 6.0.16
 
 postgres_version:
   default: "13"
