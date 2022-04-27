@@ -120,7 +120,7 @@ odoo_version:
     - 15.0
 
 odoo_proxy:
-  default: traefik
+  default: other
   choices:
     No proxy (dangerous for production): ""
     Traefik: traefik
@@ -153,7 +153,7 @@ odoo_admin_password:
     What will be your odoo admin password?
 
 odoo_listdb:
-  default: false
+  default: true
   type: bool
   help: >-
     Do you want to list databases publicly?. Some backup modules does not work with this
