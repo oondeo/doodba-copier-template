@@ -16,19 +16,9 @@ services:
       EMAIL_FROM: "{{ smtp_default_from|default("", true) }}"
       PGDATABASE: &dbname {{ postgres_dbname }}
       PGUSER: &dbuser "{{ postgres_username }}"
-      DB_FILTER: "{{ odoo_dbfilter }}"
-      PROXY_MODE: "{{ (odoo_proxy is not none)|string|lower }}"
-      ODOO_RUNNING_ENV: "${DOODBA_ENVIRONMENT-prod}"
-      ODOO_DEV: "${ODOO_DEV}"
-      ODOO_LOG_HANDLER: "${ODOO_LOG_HANDLER-:INFO}"
-      ODOO_SESSION_REDIS_HOST: "${ODOO_SESSION_REDIS_HOST-redis}"
-      ODOO_SESSION_REDIS_PREFIX: "${ODOO_SESSION_REDIS_PREFIX-odoo}"
-      ODOO_SESSION_REDIS: 1
-      AWS_HOST: "${AWS_HOST:-minio}"
-      AWS_REGION: "${AWS_REGION}"
-      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID:-$MINIO_ACCESS_KEY}"
-      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY:-$MINIO_SECRET_KEY}"
-      AWS_BUCKETNAME: "${AWS_BUCKETNAME:-$MINIO_BUCKETNAME}"
+      PROXY_MODE: "{% if odoo_proxy %}true{% else %}false{% endif %}"
+      LIST_DB: "{{ odoo_listdb | tojson }}"
+      KWKHTMLTOPDF_SERVER_URL: "http://wkhtmltopdf:8080"
     {%- if smtp_canonical_default %}
     hostname: "{{ smtp_canonical_default }}"
     {%- endif %}
@@ -46,7 +36,7 @@ services:
   {% if postgres_version -%}
   db:
     image: ghcr.io/tecnativa/postgres-autoconf:{{ postgres_version }}-alpine
-    shm_size: 512mb
+    shm_size: 4gb
     environment:
       POSTGRES_DB: *dbname
       POSTGRES_USER: *dbuser
@@ -57,11 +47,11 @@ services:
   {%- endif %}
 
   smtpfake:
-    image: mailhog/mailhog
+    image: docker.io/mailhog/mailhog
   {%- if smtp_relay_host %}
 
   smtpreal:
-    image: tvial/docker-mailserver:latest
+    image: ghcr.io/docker-mailserver/docker-mailserver:{{ smtp_relay_version }}
     domainname: "{{ smtp_canonical_default }}"
     stop_grace_period: 1m
     volumes:
@@ -94,13 +84,14 @@ services:
   {%- if backup_dst %}
 
   backup:
-    image: tecnativa/duplicity:postgres{% if backup_dst.startswith(('boto3+s3://', 's3://', 's3+http://')) %}-s3{% endif %}
+    image: ghcr.io/tecnativa/docker-duplicity-postgres{% if backup_dst.startswith(('boto3+s3://', 's3://', 's3+http://')) %}-s3{% endif %}:{{ backup_image_version }}
     hostname: backup
     {%- if macros.first_main_domain(domains_prod) %}
     domainname: {{ macros.first_main_domain(domains_prod) }}
     {%- endif %}
     init: true
     environment:
+      DBS_TO_INCLUDE: "{{ odoo_dbfilter }}"
       DST: "{{ backup_dst }}"
       {%- if smtp_relay_host %}
       EMAIL_FROM: "{{ backup_email_from }}"
@@ -122,3 +113,6 @@ services:
       - backup_cache:/root:z
       - filestore:/mnt/backup/src/odoo:z
   {%- endif %}
+
+  wkhtmltopdf:
+    image: acsone/kwhkhtmltopdf
