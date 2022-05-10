@@ -30,7 +30,7 @@ services:
       - minio
     networks: *public
     ports:
-      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:{{ macros.version_major(odoo_version) }}090:9000"
     environment:
       PORT: "9000"
       TARGET: minio
@@ -51,6 +51,7 @@ services:
         CLEAN: "false"
         COMPILE: "false"
     environment:
+      PROXY_MODE: "false"
       DOODBA_ENVIRONMENT: "${DOODBA_ENVIRONMENT-devel}"
       LIST_DB: "true"
       DEBUGPY_ENABLE: "${DOODBA_DEBUGPY_ENABLE:-0}"
