@@ -120,7 +120,7 @@ odoo_version:
     - 15.0
 
 odoo_proxy:
-  default: traefik
+  default: other
   choices:
     No proxy (dangerous for production): ""
     Traefik: traefik
@@ -153,10 +153,11 @@ odoo_admin_password:
     What will be your odoo admin password?
 
 odoo_listdb:
-  default: false
+  default: true
   type: bool
   help: >-
-    Do you want to list databases publicly?. Some backup modules does not work with this set to false
+    Do you want to list databases publicly?. Some backup modules does not work with this
+    set to false
 
 odoo_oci_image:
   type: str
@@ -214,7 +215,6 @@ gitlab_url:
     💡 If you don't use Gitlab, leave this empty and ignore all other Gitlab questions.
 
     Example: `https://gitlab.com/Tecnativa/your-doodba-project`.
-
 
 domains_prod:
   type: yaml
@@ -350,6 +350,24 @@ cidr_whitelist:
     instance, set that here please.
 
     ⚠️ It must be a list. And this is only supported if you deploy with Traefik 2+.
+
+minio_version:
+  default: 2021
+  help: >-
+    Which Minio version do you want to deploy?
+  choices:
+    I will use an external Minio server: null
+    "2022.4.9": 2022.4.9
+    "2022.4.8": 2022.4.8
+    "2022": 2022
+
+redis_version:
+  default: 6
+  help: >-
+    Which Redis version do you want to deploy?
+  choices:
+    I will use an external Redis server: null
+    "6.0.16": 6.0.16
 
 postgres_version:
   default: "13"
@@ -598,4 +616,3 @@ backup_passphrase:
     restore backups.
 
     Which will be your backups passphrase?
-

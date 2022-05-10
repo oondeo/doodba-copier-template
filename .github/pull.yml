@@ -1,0 +1,8 @@
+version: "1"
+rules:
+  - base: main
+    upstream: Tecnativa:main # change `wei` to the owner of upstream repo
+    mergeMethod: hardreset
+  - base: oondeo
+    upstream: Tecnativa:main # change `wei` to the owner of upstream repo
+    mergeMethod: merge

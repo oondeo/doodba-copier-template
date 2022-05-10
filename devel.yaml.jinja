@@ -24,6 +24,7 @@ services:
       PORT: "6899 8069"
       TARGET: odoo
 
+  {% if minio_version -%}
   minio_proxy:
     image: tecnativa/whitelist
     depends_on:
@@ -34,6 +35,22 @@ services:
     environment:
       PORT: "9000"
       TARGET: minio
+
+  minio:
+    image: bitnami/minio:{{ minio_version }}
+    volumes:
+      - s3:/data:z
+    environment:
+      MINIO_ROOT_USER: "odoo"
+      MINIO_ROOT_PASSWORD: "odoopassword"
+  {%- endif %}
+
+  {% if redis_version -%}
+  redis:
+    image: bitnami/redis:{{ redis_version }}
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+  {%- endif %}
 
   odoo:
     extends:
@@ -63,11 +80,20 @@ services:
       WDB_WEB_PORT: "{{ macros.version_major(odoo_version) }}984"
       # To avoid installing demo data export DOODBA_WITHOUT_DEMO=all
       WITHOUT_DEMO: "${DOODBA_WITHOUT_DEMO-false}"
+      {% if minio_version -%}
       AWS_HOST: "${AWS_HOST:-minio}"
       AWS_REGION: "${AWS_REGION}"
-      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID:-odo}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID:-odoo}"
       AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY:-odoopassword}"
       AWS_BUCKETNAME: "${AWS_BUCKETNAME:-dev}"
+      {%- endif %}
+      {% if redis_version -%}
+      ODOO_SESSION_REDIS: "true"
+      ODOO_SESSION_REDIS_URL: "redis://redis"
+      ODOO_SESSION_REDIS_PREFIX: "odoo_devel_{{ postgres_dbname }}}"
+      ODOO_SESSION_REDIS_EXPIRATION: "604800"
+      ODOO_SESSION_REDIS_EXPIRATION_ANONYMOUS: "10800"
+      {% endif -%}
     volumes:
       - ./odoo/custom:/opt/odoo/custom:ro,z
       - ./odoo/auto:/opt/odoo/auto:rw,z
@@ -143,6 +169,7 @@ services:
     init: true
 
   wkhtmltopdf:
+    networks: *public
     extends:
       file: common.yaml
       service: wkhtmltopdf
