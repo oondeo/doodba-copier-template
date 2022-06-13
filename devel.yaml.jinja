@@ -81,16 +81,16 @@ services:
       # To avoid installing demo data export DOODBA_WITHOUT_DEMO=all
       WITHOUT_DEMO: "${DOODBA_WITHOUT_DEMO-false}"
       {% if minio_version -%}
-      AWS_HOST: "${AWS_HOST:-minio}"
-      AWS_REGION: "${AWS_REGION}"
-      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID:-odoo}"
-      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY:-odoopassword}"
-      AWS_BUCKETNAME: "${AWS_BUCKETNAME:-dev}"
+      AWS_HOST: "minio"
+      AWS_REGION: "us-east-1"
+      AWS_ACCESS_KEY_ID: "odoo"
+      AWS_SECRET_ACCESS_KEY: "odoopassword"
+      AWS_BUCKETNAME: "odoo_devel_{{ postgres_dbname | regex_replace ("[^A-Za-z0-9]","-") }}"
       {%- endif %}
       {% if redis_version -%}
       ODOO_SESSION_REDIS: "true"
       ODOO_SESSION_REDIS_URL: "redis://redis"
-      ODOO_SESSION_REDIS_PREFIX: "odoo_devel_{{ postgres_dbname }}}"
+      ODOO_SESSION_REDIS_PREFIX: "odoo_devel_{{ postgres_dbname | regex_replace ("[^A-Za-z0-9]","-") }}"
       ODOO_SESSION_REDIS_EXPIRATION: "604800"
       ODOO_SESSION_REDIS_EXPIRATION_ANONYMOUS: "10800"
       {% endif -%}
@@ -100,7 +100,7 @@ services:
     depends_on:
       - db
       {% for host in whitelisted_hosts -%}
-      - proxy_{{ host|replace(".", "_") }}
+      - proxy_{{ host|replace(".", "_") }}h
       {% endfor -%}
       - smtp
       - wdb
@@ -140,7 +140,7 @@ services:
     environment:
       MINIO_ACCESS_KEY: odoo
       MINIO_SECRET_KEY: odoopassword
-      MINIO_DEFAULT_BUCKETS: dev
+      MINIO_DEFAULT_BUCKETS: "odoo_devel_{{ postgres_dbname | regex_replace ("[^A-Za-z0-9]","-") }}"
 
   pgweb:
     image: docker.io/sosedoff/pgweb
