@@ -85,12 +85,12 @@ services:
       AWS_REGION: "us-east-1"
       AWS_ACCESS_KEY_ID: "odoo"
       AWS_SECRET_ACCESS_KEY: "odoopassword"
-      AWS_BUCKETNAME: "odoo_devel_{{ postgres_dbname | regex_replace ("[^A-Za-z0-9]","-") }}"
+      AWS_BUCKETNAME: "odoo_devel" #"odoo_devel_{{ postgres_dbname | regex_replace ("[^A-Za-z0-9]","-") }}"
       {%- endif %}
       {% if redis_version -%}
       ODOO_SESSION_REDIS: "true"
       ODOO_SESSION_REDIS_URL: "redis://redis"
-      ODOO_SESSION_REDIS_PREFIX: "odoo_devel_{{ postgres_dbname | regex_replace ("[^A-Za-z0-9]","-") }}"
+      ODOO_SESSION_REDIS_PREFIX: "odoo_devel" #"odoo_devel_{{ postgres_dbname | regex_replace ("[^A-Za-z0-9]","-") }}"
       ODOO_SESSION_REDIS_EXPIRATION: "604800"
       ODOO_SESSION_REDIS_EXPIRATION_ANONYMOUS: "10800"
       {% endif -%}
@@ -140,7 +140,7 @@ services:
     environment:
       MINIO_ACCESS_KEY: odoo
       MINIO_SECRET_KEY: odoopassword
-      MINIO_DEFAULT_BUCKETS: "odoo_devel_{{ postgres_dbname | regex_replace ("[^A-Za-z0-9]","-") }}"
+      MINIO_DEFAULT_BUCKETS: "odoo_devel" # "odoo_devel_{{ postgres_dbname | regex_replace ("[^A-Za-z0-9]","-") }}"
 
   pgweb:
     image: docker.io/sosedoff/pgweb
