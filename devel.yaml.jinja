@@ -100,7 +100,7 @@ services:
     depends_on:
       - db
       {% for host in whitelisted_hosts -%}
-      - proxy_{{ host|replace(".", "_") }}h
+      - proxy_{{ host|replace(".", "_") }}
       {% endfor -%}
       - smtp
       - wdb
