@@ -43,6 +43,7 @@ services:
     environment:
       MINIO_ROOT_USER: "odoo"
       MINIO_ROOT_PASSWORD: "odoopassword"
+      MINIO_DEFAULT_BUCKETS: "odoo_devel_{{ postgres_dbname }}"
   {%- endif %}
 
   {% if redis_version -%}
@@ -68,6 +69,20 @@ services:
         CLEAN: "false"
         COMPILE: "false"
     environment:
+      {% if minio_version -%}
+      AWS_HOST: "minio"
+      AWS_REGION: "us-east-1"
+      AWS_ACCESS_KEY_ID: "odoo"
+      AWS_SECRET_ACCESS_KEY: "odoopassword"
+      AWS_BUCKETNAME: "odoo_devel_{{ postgres_dbname }}"
+      {%- endif %}
+      {% if redis_version -%}
+      ODOO_SESSION_REDIS: "true"
+      ODOO_SESSION_REDIS_URL: "redis://redis"
+      ODOO_SESSION_REDIS_PREFIX: "odoo_devel_{{ postgres_dbname }}"
+      ODOO_SESSION_REDIS_EXPIRATION: "604800"
+      ODOO_SESSION_REDIS_EXPIRATION_ANONYMOUS: "10800"
+      {% endif -%}
       DOODBA_ENVIRONMENT: "${DOODBA_ENVIRONMENT-devel}"
       LIST_DB: "true"
       DEBUGPY_ENABLE: "${DOODBA_DEBUGPY_ENABLE:-0}"
@@ -79,20 +94,6 @@ services:
       WDB_WEB_PORT: "{{ macros.version_major(odoo_version) }}984"
       # To avoid installing demo data export DOODBA_WITHOUT_DEMO=all
       WITHOUT_DEMO: "${DOODBA_WITHOUT_DEMO-false}"
-      {% if minio_version -%}
-      AWS_HOST: "${AWS_HOST:-minio}"
-      AWS_REGION: "${AWS_REGION}"
-      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID:-odoo}"
-      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY:-odoopassword}"
-      AWS_BUCKETNAME: "${AWS_BUCKETNAME:-dev}"
-      {%- endif %}
-      {% if redis_version -%}
-      ODOO_SESSION_REDIS: "true"
-      ODOO_SESSION_REDIS_URL: "redis://redis"
-      ODOO_SESSION_REDIS_PREFIX: "odoo_devel_{{ postgres_dbname }}}"
-      ODOO_SESSION_REDIS_EXPIRATION: "604800"
-      ODOO_SESSION_REDIS_EXPIRATION_ANONYMOUS: "10800"
-      {% endif -%}
     volumes:
       - ./odoo/custom:/opt/odoo/custom:ro,z
       - ./odoo/auto:/opt/odoo/auto:rw,z
@@ -126,20 +127,6 @@ services:
       POSTGRES_DB: *dbname
       POSTGRES_PASSWORD: odoopassword
   {%- endif %}
-
-  redis:
-    image: bitnami/redis:5.0.9
-    environment:
-      ALLOW_EMPTY_PASSWORD: "yes"
-
-  minio:
-    image: bitnami/minio:2020.6.22-debian-10-r10
-    volumes:
-      - s3:/data:z
-    environment:
-      MINIO_ACCESS_KEY: odoo
-      MINIO_SECRET_KEY: odoopassword
-      MINIO_DEFAULT_BUCKETS: dev
 
   pgweb:
     image: docker.io/sosedoff/pgweb
