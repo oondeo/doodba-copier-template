@@ -123,3 +123,36 @@ might help others with your situation.
 [copier]: https://github.com/pykong/copier
 [doodba]: https://github.com/Tecnativa/doodba
 [odoo]: https://www.odoo.com/
+
+# Pasos para una correcta implementación
+
+1. Definir Cronograma
+2. Instalar el servidor en un VPS
+3. Crear la BD e Instalar localización Contable.
+4. Cargar el Plan de Cuentas
+5. Cargar el Plan de Cuentas Análitico, si es que el cliente usará centros de costes.
+6. Cargar el Maestro de Productos
+7. Definir con el cliente las Variantes de Productos.
+8. Cargar el Maestro de Variantes de Productos.
+9. Cargar los Clientes.
+10. Cargar los Proveedores.
+11. Cargar los Usuarios.
+12. Cargar los Empleados.
+13. Cargar los Impuestos.
+14. Definir el uso de multimoneda y configurarlo.
+15. Cargar Almacenes.
+16. Cargar Ubicaciones.
+17. Capacitación de Ciclo de Ventas.
+18. Capacitación de Ciclo de Compras.
+19. Capacitación de mantención de productos.
+20. Capacitación Contable.
+21. Definir Método de Costeo.
+22. Definir Asiento Contable de Venta.
+23. Definir Asiento Contable de Compra.
+24. Capacitación de Asientos.
+25. Capacitación de Ticket de Soporte.
+26. Instalación de Módulos de 3ros (Set Básico).
+27. Configuración de Respaldo.
+28. Entrada de Saldos Contables (Facturas, Asiento de Inicio).
+29. Entrada de Inventario.
+30. Importar Inventario.

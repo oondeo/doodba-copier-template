@@ -9,6 +9,7 @@
 #     - 'es_ES.UTF-8'
 # --- oca ---
 account-analytic: ["*"]
+account-closing: ["*"]
 account-financial-reporting: ["*"]
 account-financial-tools: ["*"]
 account-fiscal-rule: ["*"]
@@ -110,19 +111,24 @@ itpp_access_addons: ["*"]
 itpp_saas_addons: ["*"]
 
 #------------ other tested ------
-crnd-addons: ["*"]
+crnd-generic: ["*"]
+crnd-web: ["*"]
 osi-addons: ["*"]
 odoomates: ["*"]
-Smile:
+smile_addons:
   - smile_access_control
-  # - smile_api_rest
+  - smile_access_control_period
   - smile_assets_version
   - smile_audit
   - smile_base_partner # missing in v14
+  - smile_fancybox_snippet
   - smile_many2many_tags_clickable
   - smile_data_integration
+  - smile_partner_mail_history
   - smile_perf_analyzer
   - smile_upgrade
+  - smile_web_hide_groups
+  # - smile_api_rest
 #--- not working - smile_base (auto_install) -
 # comunity_portal: ["*"]
 # Smile: ["*"]

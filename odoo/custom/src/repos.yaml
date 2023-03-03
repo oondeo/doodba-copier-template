@@ -251,16 +251,25 @@ smile_addons:
   defaults:
     depth: 1
   remotes:
-    origin: https://github.com/oondeo/smile_odoo_addons.git
+    origin: https://github.com/Smile-SA/odoo_addons.git
   target: origin $ODOO_VERSION
   merges:
     - origin $ODOO_VERSION
 
-crnd-addons:
+crnd-generic:
   defaults:
-    depth: 100
+    depth: 1
   remotes:
     origin: https://github.com/crnd-inc/generic-addons.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
+
+crnd-web:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/crnd-inc/crnd-web.git
   target: origin $ODOO_VERSION
   merges:
     - origin $ODOO_VERSION
