@@ -45,7 +45,7 @@ _tasks:
   - invoke develop
 
 _migrations:
-  - version: v0.0.1-0-0
+  - version: v0.0.1
     after:
       - - invoke
         - --search-root={{ _copier_conf.src_path }}
@@ -107,7 +107,7 @@ _migrations:
 odoo_version:
   help: On which odoo version is it based?
   type: float
-  default: 15.0
+  default: 16.0
   choices:
     - 7.0
     - 8.0
@@ -118,6 +118,7 @@ odoo_version:
     - 13.0
     - 14.0
     - 15.0
+    - 16.0
 
 odoo_proxy:
   default: other
@@ -370,7 +371,7 @@ redis_version:
     "6.0.16": 6.0.16
 
 postgres_version:
-  default: "13"
+  default: "14"
   help: >-
     Which PostgreSQL version do you want to deploy?
   choices:
@@ -380,6 +381,7 @@ postgres_version:
     "11": "11"
     "12": "12"
     "13": "13"
+    "14": "14"
 
 postgres_username:
   type: str

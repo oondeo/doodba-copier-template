@@ -131,6 +131,7 @@ def write_code_workspace_file(c, cw_path=None):
     cw_config["settings"].update(
         {
             "python.autoComplete.extraPaths": [f"{str(SRC_PATH)}/odoo"],
+            "python.formatting.provider": "none",
             "python.linting.flake8Enabled": True,
             "python.linting.ignorePatterns": [f"{str(SRC_PATH)}/odoo/**/*.py"],
             "python.linting.pylintArgs": [
@@ -138,12 +139,13 @@ def write_code_workspace_file(c, cw_path=None):
                 "--load-plugins=pylint_odoo",
             ],
             "python.linting.pylintEnabled": True,
-            "python.pythonPath": "python%s" % (2 if ODOO_VERSION < 11 else 3),
+            "python.defaultInterpreterPath": "python%s"
+            % (2 if ODOO_VERSION < 11 else 3),
             "restructuredtext.confPath": "",
             "search.followSymlinks": False,
             "search.useIgnoreFiles": False,
             # Language-specific configurations
-            "[python]": {"editor.defaultFormatter": "ms-python.python"},
+            "[python]": {"editor.defaultFormatter": "ms-python.black-formatter"},
             "[json]": {"editor.defaultFormatter": "esbenp.prettier-vscode"},
             "[jsonc]": {"editor.defaultFormatter": "esbenp.prettier-vscode"},
             "[markdown]": {"editor.defaultFormatter": "esbenp.prettier-vscode"},
@@ -442,6 +444,14 @@ def git_aggregate(c):
             c.run(f"pre-commit {action}")
 
 
+@task(develop)
+def closed_prs(c):
+    """Test closed PRs from repos.yaml"""
+    with c.cd(str(PROJECT_ROOT / "odoo/custom/src")):
+        cmd = "gitaggregate -c {} show-closed-prs".format("repos.yaml")
+        c.run(cmd, env=UID_ENV, pty=True)
+
+
 @task()
 def img_build(c, pull=True):
     """Build docker images."""
@@ -565,7 +575,7 @@ def install(
 
 @task(
     help={
-        "modules": "Comma-separated list of modules to install.",
+        "modules": "Comma-separated list of modules to uninstall.",
     },
 )
 def uninstall(
