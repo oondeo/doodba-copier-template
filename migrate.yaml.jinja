@@ -1,0 +1,60 @@
+{% import "_macros.jinja" as macros -%}
+# Use this environment to download all repositories from `repos.yaml` file:
+#
+#   export DOODBA_GITAGGREGATE_UID="$(id -u $USER)" DOODBA_GITAGGREGATE_GID="$(id -g $USER)" DOODBA_UMASK="$(umask)"
+#   docker-compose -f setup-devel.yaml run --rm odoo
+#
+# You can clean your git project before if you want to have all really clean:
+#
+#   git clean -ffd
+
+version: "2.4"
+
+services:
+  odoo:
+    {%- if odoo_oci_image and odoo_version >= 14 %}
+    image: {{ odoo_oci_image }}:{{ macros.version_minor(odoo_version) }}
+    {%- endif %}
+    build:
+      context: ./odoo
+      args:
+        AGGREGATE: "false"
+        DEPTH_DEFAULT: 100
+        ODOO_VERSION: "{{ macros.version_minor(odoo_version) }}"
+        PYTHONOPTIMIZE: ""
+        PIP_INSTALL_ODOO: "false"
+        CLEAN: "false"
+        COMPILE: "false"
+        UID: "${UID:-1000}"
+        GID: "${GID:-1000}"
+    networks:
+      - public
+    volumes:
+      - filestore:/mnt/odoo:rw,z
+      - openupgrade_filestore:/var/lib/odoo:rw,z
+      - ./odoo/custom:/opt/odoo/custom:ro,z
+      - ./odoo/auto:/opt/odoo/auto:rw,z
+    environment:
+      {%- if odoo_version >= 14 %}
+      ODOO_REPO: ocb
+      {% else %%}
+      ODOO_REPO: openupgrade
+      {%- endif %}
+      OPENUPGRADE_USE_DEMO: false
+      OPENUPGRADE_TARGET_VERSION: 16.0
+      OPENUPGRADE_BASE_VERSION: "{{ macros.version_minor(odoo_version) }}"
+      DEPTH_DEFAULT: 100
+      # XXX Export these variables before running setup to own the files
+      UID: "${DOODBA_GITAGGREGATE_UID:-1000}"
+      GID: "${DOODBA_GITAGGREGATE_GID:-1000}"
+      UMASK: "$DOODBA_UMASK"
+    user: root
+    entrypoint: migrate
+
+networks:
+  public:
+
+volumes:
+  filestore:
+  openupgrade_filestore:
+  s3:
