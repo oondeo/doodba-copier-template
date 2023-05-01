@@ -566,14 +566,14 @@ files = [
 
 [[package]]
 name = "invoke"
-version = "1.7.3"
+version = "2.1.0"
 description = "Pythonic task execution"
 category = "dev"
 optional = false
-python-versions = "*"
+python-versions = ">=3.6"
 files = [
-    {file = "invoke-1.7.3-py3-none-any.whl", hash = "sha256:d9694a865764dd3fd91f25f7e9a97fb41666e822bbb00e670091e3f43933574d"},
-    {file = "invoke-1.7.3.tar.gz", hash = "sha256:41b428342d466a82135d5ab37119685a989713742be46e42a3a399d685579314"},
+    {file = "invoke-2.1.0-py3-none-any.whl", hash = "sha256:409c9cff8325d697f44308fda3026a97691972adc4ab81575d655a2100b50abc"},
+    {file = "invoke-2.1.0.tar.gz", hash = "sha256:277894c57fa2b77f22ed3c7726fb8689773301e4497ccb2a59f19bc7bbbe5b4a"},
 ]
 
 [[package]]
@@ -1598,4 +1598,4 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=4.6)", "pytest-black (
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.6.1"
-content-hash = "dbb08dd86cb7d3b4582f1920baacbc83ccd61d7525c110606e98ef88374553bb"
+content-hash = "1dc78347222e6933e4853ddbaf223bb91d3d8cc691ce2a726ad1aaf9459476e7"
