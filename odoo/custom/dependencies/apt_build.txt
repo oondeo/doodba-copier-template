@@ -4,3 +4,5 @@ libxmlsec1-dev
 libldap2-dev
 libzbar-dev
 swig
+libcairo2-dev
+libgirepository1.0-dev
