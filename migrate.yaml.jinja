@@ -37,7 +37,7 @@ services:
     environment:
       {%- if odoo_version >= 14 %}
       ODOO_REPO: ocb
-      {% else %%}
+      {% else %}
       ODOO_REPO: openupgrade
       {%- endif %}
       OPENUPGRADE_USE_DEMO: false
