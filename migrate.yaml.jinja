@@ -30,18 +30,18 @@ services:
     networks:
       - public
     volumes:
-      - filestore:/mnt/odoo:rw,z
-      - openupgrade_filestore:/var/lib/odoo:rw,z
+      - openupgrade_filestore_{{ project_name }}:/var/lib/odoo:rw,z
       - ./odoo/custom:/opt/odoo/custom:ro,z
       - ./odoo/auto:/opt/odoo/auto:rw,z
     environment:
+      DOODBA_PROJECT_NAME: {{ project_name }}
       {%- if odoo_version >= 14 %}
       ODOO_REPO: ocb
       {% else %}
       ODOO_REPO: openupgrade
       {%- endif %}
       OPENUPGRADE_USE_DEMO: false
-      OPENUPGRADE_TARGET_VERSION: 16.0
+      OPENUPGRADE_TARGET_VERSION: {{ target_odoo_version }}
       OPENUPGRADE_BASE_VERSION: "{{ macros.version_minor(odoo_version) }}"
       DEPTH_DEFAULT: 100
       # XXX Export these variables before running setup to own the files
@@ -55,6 +55,5 @@ networks:
   public:
 
 volumes:
-  filestore:
-  openupgrade_filestore:
-  s3:
+  openupgrade_filestore_{{ project_name }}:
+    external: true

@@ -56,6 +56,7 @@ python3 -m pip install --user pipx
 pipx install copier
 pipx install invoke
 pipx install pre-commit
+pipx install odoo-module-migrator
 pipx ensurepath
 ```
 
@@ -96,6 +97,10 @@ Basically, read Copier docs and `copier --help-all` to know how to use it.
 # Using your subproject to build an Odoo deployment
 
 This is a big topic [documented separately](docs/daily-usage.md).
+
+# Migrating odoo versions
+
+This is a big topic [documented separately](docs/odoo-migration.md).
 
 # Getting help
 

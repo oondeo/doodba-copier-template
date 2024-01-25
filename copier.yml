@@ -113,6 +113,24 @@ odoo_version:
     - 16.0
     - 17.0
 
+target_odoo_version:
+  help: On migrations final odoo version, leave blank if you are not migrating
+  type: float
+  choices:
+    - 0.0: "None"
+    - 7.0
+    - 8.0
+    - 9.0
+    - 10.0
+    - 11.0
+    - 12.0
+    - 13.0
+    - 14.0
+    - 15.0
+    - 16.0
+    - 17.0
+
+
 odoo_proxy:
   default: other
   choices:

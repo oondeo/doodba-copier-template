@@ -195,6 +195,10 @@ networks:
   public:
 
 volumes:
+  {%- if odoo_version > 0 %}
+  openupgrade_filestore_{{ project_name }}:
+  {% else %}
   filestore:
+  {%- endif %}
   db:
   s3:

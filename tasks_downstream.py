@@ -49,7 +49,11 @@ ODOO_VERSION = float(
 DOCKER_COMPOSE_CMD = (
     shutil.which("docker-compose") or f"{shutil.which('docker')} compose"
 )
-
+PROJECT_NAME = float(
+    yaml.safe_load((PROJECT_ROOT / "migrate.yaml").read_text())["services"]["odoo"][
+        "environment"
+    ]["DOODBA_PROJECT_NAME"]
+)
 _logger = getLogger(__name__)
 
 
@@ -1045,3 +1049,84 @@ def restore_snapshot(
         if "Stopping" in cur_state:
             # Restart services if they were previously active
             c.run(DOCKER_COMPOSE_CMD + " start odoo db", pty=True)
+
+
+
+@task(
+    help={
+        "version": "Old odoo version",
+        "source": "Source directory of modules",
+        "modules": "Comma-separated list of modules to migrate"
+    },
+)
+def module_migrate(
+    c,
+    version="",
+    source="",
+    modules=""
+):
+    """Migrate module from old version of odoo to private directory.
+    """
+    dst = "odoo/custom/src/private"
+    cmd = f"""odoo-module-migrate \
+        --init-version-name {version} \
+        --target-version-name {ODOO_VERSION} \
+        --directory "{dst}" \
+        --modules {modules} \
+        --no-commit
+    """
+    with c.cd(str(PROJECT_ROOT)):
+        for m in modules.split(","):
+            m = m.strip()
+            c.run(f"cp -a {source}/{m} {dst}")
+        c.run(cmd, pty=True)
+
+@task
+def check_openupgrade_volune(c):
+    with c.cd(str(PROJECT_ROOT)):
+        cmd = "docker volume create openupgrade_filestore_{PROJECT_NAME}"
+        try:
+            res = c.run(cmd, env=UID_ENV, pty=True)
+        except:
+            pass
+
+@task(check_openupgrade_volune)
+def migrate_build(c, pull=True):
+    """Build docker images."""
+    cmd = DOCKER_COMPOSE_CMD + " -f migrate.yaml build"
+    if pull:
+        cmd += " --pull"
+    with c.cd(str(PROJECT_ROOT)):
+        c.run(cmd, env=UID_ENV, pty=True)
+
+@task(check_openupgrade_volune)
+def migrate(c, detach=True):
+    """Build docker images."""
+    cmd = DOCKER_COMPOSE_CMD + " -f migrate.yaml up"
+    if detach:
+        cmd += " -d"
+    with c.cd(str(PROJECT_ROOT)):
+        c.run(cmd, env=UID_ENV, pty=True)
+
+
+
+@task(
+    help={
+        "database": "Database to change password",
+        "password": "New password",
+        "user": "Default admin"
+    },
+)
+def password_reset(c,database,password,user="admin"):
+    """ reset password """
+    # - docker-compose -f prod.yaml exec odoo odoo shell –no-http -d odoo.oondeo.es
+    # - self.env['res.users'].browse(2).password="admin"
+    # - self.env.cr.commit()
+    cmd = f"""
+        echo "self.env['res.users'].search([('login', '=', '{user}')]).password='{password}'"; self.env.cr.commit() \
+            | {DOCKER_COMPOSE_CMD} exec odoo shell --no-http -d {database}
+    """
+    with c.cd(str(PROJECT_ROOT)):
+        c.run(cmd, env=UID_ENV, pty=True)
+
+
