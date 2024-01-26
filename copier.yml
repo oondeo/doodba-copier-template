@@ -119,7 +119,7 @@ target_odoo_version:
   default: 0.0
   choices:
     None: 0.0
-    7.0: 7.0 
+    7.0: 7.0
     8.0: 8.0
     9.0: 9.0
     10.0: 10.0
@@ -134,7 +134,13 @@ target_odoo_version:
 base_odoo_db:
   help: On migrations db to migrate
   type: str
-  when: "{{ target_odoo_version > 0 }}"  
+  when: "{{ target_odoo_version > 0 }}"
+
+dev_ip_address:
+  default: "127.0.0.1"
+  help:
+    "Ip address to use in development, set to host ip if must be accesible from other
+    machines"
 
 odoo_proxy:
   default: ""
@@ -442,7 +448,7 @@ postgres_password:
     What will be your postgres user password?
 
 postgres_exposed:
-  default: false
+  default: true
   type: bool
   help: >-
     Do you want to expose database service?
@@ -463,6 +469,13 @@ postgres_cidr_whitelist:
     instance, set that here please.
 
     ⚠️ It must be a list. And this is only supported if you deploy with Traefik 2+.
+
+postgres_dev_exposed:
+  default: true
+  type: bool
+  when: *db_exposed
+  help: >-
+    Do you want to expose database service on development?
 
 odoo_dbfilter:
   default: "{{ postgres_dbname }}$"

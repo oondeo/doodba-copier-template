@@ -19,6 +19,8 @@ services:
       - .docker/minio.env
       - .docker/redis.env
     environment:
+      LIST_DB: "{{ odoo_listdb | tojson }}"
+      PROXY_MODE: "{% if odoo_proxy %}true{% else %}false{% endif %}"
       DB_FILTER: "{{ odoo_dbfilter }}"
       DOODBA_ENVIRONMENT: "${DOODBA_ENVIRONMENT-prod}"
       INITIAL_LANG: "{{ odoo_initial_lang }}"
@@ -49,6 +51,31 @@ services:
         paths_without_crawlers,
         project_name,
       ) }}
+      {%- endif %}
+
+  {% if postgres_version -%}
+  db:
+    extends:
+      file: common.yaml
+      service: db
+    env_file:
+      - .docker/db-creation.env
+    restart: unless-stopped
+    {%- if postgres_exposed and odoo_proxy == "traefik" %}
+    networks:
+      default:
+      inverseproxy_shared:
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "inverseproxy_shared"
+      {{- traefik2_labels.database(
+        domains_prod,
+        postgres_cidr_whitelist,
+        _key,
+        postgres_exposed_port,
+        project_name,
+      ) }}
+    {%- endif %}
       {%- endif %}
 
   {%- if smtp_relay_host %}
@@ -108,6 +135,7 @@ volumes:
   {% else %}
   filestore:
   {%- endif %}
+  db:
   {%- if smtp_relay_host %}
   mailconfig:
   maildata:

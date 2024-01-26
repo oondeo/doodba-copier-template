@@ -49,7 +49,7 @@ ODOO_VERSION = float(
 DOCKER_COMPOSE_CMD = (
     shutil.which("docker-compose") or f"{shutil.which('docker')} compose"
 )
-PROJECT_NAME = float(
+PROJECT_NAME = str(
     yaml.safe_load((PROJECT_ROOT / "migrate.yaml").read_text())["services"]["odoo"][
         "environment"
     ]["DOODBA_PROJECT_NAME"]
@@ -1051,22 +1051,15 @@ def restore_snapshot(
             c.run(DOCKER_COMPOSE_CMD + " start odoo db", pty=True)
 
 
-
 @task(
     help={
         "version": "Old odoo version",
         "source": "Source directory of modules",
-        "modules": "Comma-separated list of modules to migrate"
+        "modules": "Comma-separated list of modules to migrate",
     },
 )
-def module_migrate(
-    c,
-    version="",
-    source="",
-    modules=""
-):
-    """Migrate module from old version of odoo to private directory.
-    """
+def module_migrate(c, version="", source="", modules=""):
+    """Migrate module from old version of odoo to private directory."""
     dst = "odoo/custom/src/private"
     cmd = f"""odoo-module-migrate \
         --init-version-name {version} \
@@ -1081,14 +1074,16 @@ def module_migrate(
             c.run(f"cp -a {source}/{m} {dst}")
         c.run(cmd, pty=True)
 
+
 @task
 def check_openupgrade_volune(c):
     with c.cd(str(PROJECT_ROOT)):
         cmd = "docker volume create openupgrade_filestore_{PROJECT_NAME}"
         try:
-            res = c.run(cmd, env=UID_ENV, pty=True)
-        except:
-            pass
+            c.run(cmd, env=UID_ENV, pty=True)
+        except Exception as e:
+            _logger.info(e)
+
 
 @task(check_openupgrade_volune)
 def migrate_build(c, pull=True):
@@ -1098,6 +1093,7 @@ def migrate_build(c, pull=True):
         cmd += " --pull"
     with c.cd(str(PROJECT_ROOT)):
         c.run(cmd, env=UID_ENV, pty=True)
+
 
 @task(check_openupgrade_volune)
 def migrate(c, detach=True):
@@ -1109,16 +1105,15 @@ def migrate(c, detach=True):
         c.run(cmd, env=UID_ENV, pty=True)
 
 
-
 @task(
     help={
         "database": "Database to change password",
         "password": "New password",
-        "user": "Default admin"
+        "user": "Default admin",
     },
 )
-def password_reset(c,database,password,user="admin"):
-    """ reset password """
+def password_reset(c, database, password, user="admin"):
+    """reset password"""
     # - docker-compose -f prod.yaml exec odoo odoo shell –no-http -d odoo.oondeo.es
     # - self.env['res.users'].browse(2).password="admin"
     # - self.env.cr.commit()
@@ -1128,5 +1123,3 @@ def password_reset(c,database,password,user="admin"):
     """
     with c.cd(str(PROJECT_ROOT)):
         c.run(cmd, env=UID_ENV, pty=True)
-
-

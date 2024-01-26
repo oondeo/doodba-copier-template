@@ -18,9 +18,9 @@ services:
       default:
       public:
     ports:
-      - "127.0.0.1:{{ macros.version_major(odoo_version) }}899:6899"
-      - "127.0.0.1:{{ macros.version_major(odoo_version) }}069:8069"
-      - "127.0.0.1:{{ macros.version_major(odoo_version) }}072:8072"
+      - "{{ dev_ip_address }}:{{ macros.version_major(odoo_version) }}899:6899"
+      - "{{ dev_ip_address }}:{{ macros.version_major(odoo_version) }}069:8069"
+      - "{{ dev_ip_address }}:{{ macros.version_major(odoo_version) }}072:8072"
     environment:
       PORT: "6899 8069 8072"
       TARGET: odoo
@@ -32,7 +32,7 @@ services:
       - minio
     networks: *public
     ports:
-      - "127.0.0.1:{{ macros.version_major(odoo_version) }}090:9000"
+      - "{{ dev_ip_address }}:{{ macros.version_major(odoo_version) }}090:9000"
     environment:
       PORT: "9000"
       TARGET: minio
@@ -128,27 +128,26 @@ services:
     environment:
       POSTGRES_DB: *dbname
       POSTGRES_PASSWORD: odoopassword
+
+  {%- if postgres_dev_exposed %}
+  db_proxy:
+    image: tecnativa/whitelist
+    depends_on:
+      - db
+    networks: *public
+    ports:
+      - "{{ dev_ip_address }}:{{ postgres_exposed_port }}:5432"
+    environment:
+      PORT: "5432"
+      TARGET: db
   {%- endif %}
-
-  redis:
-    image: bitnami/redis:5.0.9
-    environment:
-      ALLOW_EMPTY_PASSWORD: "yes"
-
-  minio:
-    image: bitnami/minio:2020.6.22-debian-10-r10
-    volumes:
-      - s3:/data:z
-    environment:
-      MINIO_ACCESS_KEY: odoo
-      MINIO_SECRET_KEY: odoopassword
-      MINIO_DEFAULT_BUCKETS: "odoo_devel"
+  {%- endif %}
 
   pgweb:
     image: docker.io/sosedoff/pgweb
     networks: *public
     ports:
-      - "127.0.0.1:{{ macros.version_major(odoo_version) }}081:8081"
+      - "{{ dev_ip_address }}:{{ macros.version_major(odoo_version) }}081:8081"
     environment:
       DATABASE_URL: postgres://{{ postgres_username }}:odoopassword@db:5432/devel?sslmode=disable
     depends_on:
@@ -160,13 +159,13 @@ services:
       service: smtpfake
     networks: *public
     ports:
-      - "127.0.0.1:{{ macros.version_major(odoo_version) }}025:8025"
+      - "{{ dev_ip_address }}:{{ macros.version_major(odoo_version) }}025:8025"
 
   wdb:
     image: docker.io/kozea/wdb
     networks: *public
     ports:
-      - "127.0.0.1:{{ macros.version_major(odoo_version) }}984:1984"
+      - "{{ dev_ip_address }}:{{ macros.version_major(odoo_version) }}984:1984"
     # HACK https://github.com/Kozea/wdb/issues/136
     init: true
 
