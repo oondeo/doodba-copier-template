@@ -114,26 +114,30 @@ odoo_version:
     - 17.0
 
 target_odoo_version:
-  help: On migrations final odoo version, leave blank if you are not migrating
+  help: On migrations final odoo version, leave default if you are not migrating
   type: float
   default: 0.0
   choices:
-    - None: 0.0
-    - 7.0: 7.0 
-    - 8.0: 8.0
-    - 9.0: 9.0
-    - 10.0: 10.0
-    - 11.0: 11.0
-    - 12.0: 12.0
-    - 13.0: 13.0
-    - 14.0: 14.0
-    - 15.0: 15.0
-    - 16.0: 16.0
-    - 17.0: 17.0
+    None: 0.0
+    7.0: 7.0 
+    8.0: 8.0
+    9.0: 9.0
+    10.0: 10.0
+    11.0: 11.0
+    12.0: 12.0
+    13.0: 13.0
+    14.0: 14.0
+    15.0: 15.0
+    16.0: 16.0
+    17.0: 17.0
 
+base_odoo_db:
+  help: On migrations db to migrate
+  type: str
+  when: "{{ target_odoo_version > 0 }}"  
 
 odoo_proxy:
-  default: other
+  default: ""
   choices:
     No proxy (dangerous for production): ""
     Traefik: traefik
@@ -145,7 +149,7 @@ odoo_proxy:
     Which proxy will you use to deploy odoo?
 
 odoo_initial_lang:
-  default: en_US
+  default: es_ES
   type: str
   help: >-
     If you want to initialize Odoo automatically in a specific language, write it here.
@@ -189,7 +193,7 @@ project_author:
     Tell me who you are.
 
     If private modules do not include this author, pylint will warn you.
-  default: Tecnativa
+  default: Oondeo
 
 project_name:
   type: str
@@ -384,6 +388,7 @@ redis_version:
     Which Redis version do you want to deploy?
   choices:
     I will use an external Redis server: null
+    "6": "6"
     "6.0.16": "6.0.16"
 
 postgres_version:
@@ -406,6 +411,12 @@ postgres_version:
     %}  The postgres version is too low for the selected Odoo version. {% elif
     odoo_version <= 12.0 and postgres_version|int > 13 %}  The postgres version is too
     high for the selected Odoo version. {% endif %} {% endif %}
+
+postgres_host:
+  type: str
+  help: >-
+    💡 Postgres host to connect (Use your host ip address)
+  when: "{{ postgres_version == '' }}"
 
 postgres_username:
   type: str
@@ -454,7 +465,7 @@ postgres_cidr_whitelist:
     ⚠️ It must be a list. And this is only supported if you deploy with Traefik 2+.
 
 odoo_dbfilter:
-  default: "^{{ postgres_dbname }}"
+  default: "{{ postgres_dbname }}$"
   type: str
   help: >-
     Set your Odoo db filter. It must be a regexp that matches the domain name being
