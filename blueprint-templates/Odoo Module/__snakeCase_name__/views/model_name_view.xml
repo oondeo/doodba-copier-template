@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="https://raw.githubusercontent.com/odoo/odoo/16.0/odoo/import_xml.rng" type="application/xml"?>
 <!-- Copyright <YEAR(S)> <AUTHOR(S)>
      License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
 
@@ -9,7 +10,7 @@
     <field name="model">model.name</field>
     <field name="arch" type="xml">
         <form string="My Data">
-            <!-- My view content -->
+                <!-- My view content -->
         </form>
     </field>
 </record>
@@ -19,7 +20,7 @@
     <field name="model">model.name</field>
     <field name="inherit_id" ref="othermodule.form_view"/>
     <field name="arch" type="xml">
-        <!-- My view modifications -->
+            <!-- My view modifications -->
     </field>
 </record>
 

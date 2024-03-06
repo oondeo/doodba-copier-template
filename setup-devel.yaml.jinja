@@ -32,6 +32,7 @@ services:
     volumes:
       - ./odoo/custom/src:/opt/odoo/custom/src:rw,z
     environment:
+      ODOO_REPO: ocb
       DEPTH_DEFAULT: 100
       # XXX Export these variables before running setup to own the files
       UID: "${DOODBA_GITAGGREGATE_UID:-1000}"

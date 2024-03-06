@@ -16,10 +16,14 @@
    ensure that use external database and point to database created before (Use host ip
    address and port 5432). Example: if you are migrating to 16.0 from 12.0, you must
    create 13.0, 14.0, 15.0 and 16.0 projects, TARGET_ODOO_VERSION always will be 16.0
-   and change ODOO_VERSION in each project
+   and change ODOO_VERSION in each project.
 5. On target project (16.0 in our example) migrate private modules: invoke
    module-migrate 12.0 /source-dir/of_modules module1,module2
-6. Launch migrate on each version: invoke migrate
-7. Read all logs and fix errors on source database
-8. Delete failed database
-9. Relaunch migration
+6. Manualy migrate modules. Read docs:
+
+- <https://github.com/OCA/maintainer-tools/wiki/Migration-to-version-17.0>
+
+7. Launch migrate on each version: invoke migrate
+8. Read all logs and fix errors on source database
+9. Delete failed database
+10. Relaunch migration

@@ -22,10 +22,12 @@ This project lets you maintain [Odoo][] deployments based on [Doodba][] using
   - [Use the template to generate your subproject](#use-the-template-to-generate-your-subproject)
   - [Getting updates for your subproject](#getting-updates-for-your-subproject)
 - [Using your subproject to build an Odoo deployment](#using-your-subproject-to-build-an-odoo-deployment)
+- [Migrating odoo versions](#migrating-odoo-versions)
 - [Getting help](#getting-help)
 - [Contributing](#contributing)
 - [Credits](#credits)
 - [Footnotes](#footnotes)
+- [Pasos para una correcta implementación](#pasos-para-una-correcta-implementaci%C3%B3n)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 <!-- prettier-ignore-end -->
@@ -65,7 +67,7 @@ pipx ensurepath
 Once you installed everything, you can now use Copier to copy this template:
 
 ```bash
-copier copy gh:oondeo/doodba-copier-template ~/path/to/your/subproject --vcs-ref oondeo --trust
+copier copy --vcs-ref oondeo --trust gh:oondeo/doodba-copier-template ~/path/to/your/subproject
 ```
 
 Copier will ask you a lot of questions. Answer them to properly generate the template.

@@ -1060,6 +1060,7 @@ def restore_snapshot(
 )
 def module_migrate(c, version="", source="", modules=""):
     """Migrate module from old version of odoo to private directory."""
+    ## TODO: use docker compose and docker cp
     dst = "odoo/custom/src/private"
     cmd = f"""odoo-module-migrate \
         --init-version-name {version} \

@@ -282,3 +282,12 @@ osi-addons:
   target: origin $ODOO_VERSION
   merges:
     - origin $ODOO_VERSION
+
+connector-okticket:
+  defaults:
+    depth: 1
+  remotes:
+    origin: https://github.com/acysos/odoo-addons.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION

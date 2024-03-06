@@ -101,10 +101,7 @@ OpenHRMS: ["*"]
 
 #---- it projects llc-----
 itpp_pos_addons: ["*"]
-itpp_mail_addons: ["*"]
-itpp_misc_addons: ["*"]
 itpp_sync_addons: ["*"]
-# itpp_website_addons: ["*"] # Conflict website_event_require_login with event repo
 itpp_access_addons: ["*"]
 # saas_clusters: ["*"]
 itpp_saas_addons: ["*"]
@@ -115,19 +112,19 @@ crnd-web: ["*"]
 osi-addons: ["*"]
 odoomates: ["*"]
 smile_addons:
-  - smile_access_control
-  - smile_access_control_period
-  - smile_assets_version
+  # - smile_data_integration
+  # - smile_upgrade
+  # - smile_api_rest
+  # - smile_base_partner # missing in v14
+  # - smile_access_control
+  # - smile_access_control_period
+  # - smile_assets_version
   - smile_audit
-  - smile_base_partner # missing in v14
   - smile_fancybox_snippet
   - smile_many2many_tags_clickable
-  - smile_data_integration
   - smile_partner_mail_history
   - smile_perf_analyzer
-  - smile_upgrade
   - smile_web_hide_groups
-  # - smile_api_rest
 #--- not working - smile_base (auto_install) -
 # comunity_portal: ["*"]
 # Smile: ["*"]
@@ -147,6 +144,7 @@ ONLY:
     - "14.0"
     - "15.0"
     - "16.0"
+    - "17.0"
 server-env: ["*"]
 
 ---
@@ -155,4 +153,19 @@ ONLY:
     - "14.0"
     - "15.0"
     - "16.0"
+    - "17.0"
 openupgrade: ["*"]
+fleet: ["*"]
+
+---
+ONLY:
+  ODOO_VERSION:
+    - "12.0"
+    - "13.0"
+    - "14.0"
+    - "15.0"
+    - "16.0"
+    - "17.0"
+itpp_mail_addons: ["*"]
+itpp_misc_addons: ["*"]
+# itpp_website_addons: ["*"] # Conflict website_event_require_login with event repo
