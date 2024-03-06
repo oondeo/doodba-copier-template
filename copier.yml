@@ -142,6 +142,19 @@ dev_ip_address:
     "Ip address to use in development, set to host ip if must be accesible from other
     machines"
 
+fixed_network:
+  default: ""
+  help:
+    "Network subnet to use in production (by use for example with host installed nginx).
+    example: 192.168.55.0/24"
+
+fixed_ip_address:
+  default: ""
+  help:
+    "Ip address to use in production (by use for example with host installed nginx).
+    Caution: use last ips of setted network example: 192.168.55.91/24"
+  when: "{{ fixed_network == '' }}"
+
 odoo_proxy:
   default: ""
   choices:

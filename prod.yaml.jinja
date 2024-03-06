@@ -34,6 +34,9 @@ services:
       {%- endif %}
     networks:
       default:
+      {% if fixed_ip_address %}
+        ipv4_address: {{ fixed_ip_address }}
+      {% endif %}
     {%- if odoo_proxy == "traefik" and domains_prod %}
       inverseproxy_shared:
     {%- endif %}
@@ -118,12 +121,21 @@ services:
 networks:
   default:
     name: net-{{ macros.first_main_domain(domain_groups_list) | replace(".","-") }}
+    {% fixed_network %}
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: {{ fixed_network }}
+          # gateway: 192.168.55.1
+    {% else %}
     driver_opts:
       encrypted: 1
   {%- if odoo_proxy == "traefik" %}
 
   inverseproxy_shared:
     external: true
+  {%- endif %}
   {%- endif %}
 
 volumes:
