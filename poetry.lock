@@ -908,13 +908,13 @@ testing = ["filelock"]
 
 [[package]]
 name = "python-on-whales"
-version = "0.69.0"
+version = "0.70.0"
 description = "A Docker client for Python, designed to be fun and intuitive!"
 optional = false
 python-versions = "<4,>=3.8"
 files = [
-    {file = "python-on-whales-0.69.0.tar.gz", hash = "sha256:86bef044568e6abd381e63731e03a6536709be129c5934020da403b99f489b5e"},
-    {file = "python_on_whales-0.69.0-py3-none-any.whl", hash = "sha256:73cf63377fbcbfee1f4a5e58148a1a0293f2ba153c2b862b830d0d9fedd5e223"},
+    {file = "python-on-whales-0.70.0.tar.gz", hash = "sha256:bb89e91c86e049f9c04e2636f2d40faa000ff5b17d54f71e68581201e449eda5"},
+    {file = "python_on_whales-0.70.0-py3-none-any.whl", hash = "sha256:492325387d7686adc6669e911820bd4da1cd672bc5a7fb6d54c32ee849bfe7e6"},
 ]
 
 [package.dependencies]
@@ -1203,4 +1203,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "42d925934519effdab6429271451a005e4d1bff6af8e9f34704637ab5c69db43"
+content-hash = "46497680be70e18ead08d4622071c4ab5e0af457dccce0954087aee1ebd764f4"
