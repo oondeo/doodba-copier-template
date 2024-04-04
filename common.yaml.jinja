@@ -16,6 +16,7 @@ services:
         UID: "${UID:-1000}"
         GID: "${GID:-1000}"
     environment:
+      ODOO_MIGRATE: "false"
       ODOO_REPO: ocb
       OPENBLAS_NUM_THREADS: 1
       EMAIL_FROM: "{{ smtp_default_from|default("", true) }}"

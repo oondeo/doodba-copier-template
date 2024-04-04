@@ -71,6 +71,7 @@ services:
       DOODBA_PROJECT_NAME: {{ project_name }}
       AUTOCOPY: "false"
       AGGREGATE: "true"
+      ODOO_MIGRATE: "true"
     # user: root
     entrypoint: /opt/odoo/custom/bin/migrate
     command:

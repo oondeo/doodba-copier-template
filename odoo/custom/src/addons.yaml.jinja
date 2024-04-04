@@ -115,6 +115,7 @@ c2c_cloud_platform: ["*"]
 # builder: ["*"]
 # echarts: ["*"]
 
+{%- if target_odoo_version < 7 %}
 ---
 ONLY:
   ODOO_VERSION:
@@ -170,3 +171,5 @@ ONLY:
 itpp_mail_addons: ["*"]
 itpp_misc_addons: ["*"]
 # itpp_website_addons: ["*"] # Conflict website_event_require_login with event repo
+
+{% endif %}
