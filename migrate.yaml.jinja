@@ -63,10 +63,10 @@ services:
       # To avoid installing demo data export DOODBA_WITHOUT_DEMO=all
       WITHOUT_DEMO: "true"
       OPENUPGRADE_USE_DEMO: "false"
-      OPENUPGRADE_OLD_VERSION: "{{  int(macros.version_major(odoo_version))-1 }}.0"
+      OPENUPGRADE_OLD_VERSION: "{{  macros.last_version_major(odoo_version) }}.0"
       OPENUPGRADE_TARGET_VERSION: "{{ macros.version_minor(target_odoo_version) }}"
       OPENUPGRADE_BASE_VERSION: "{{ macros.version_minor(odoo_version) }}"
-      OPENUPGRADE_BASE_DB: "{{ postgres_dbname }}_openupgrade_{{  int(macros.version_major(odoo_version))-1 }}"
+      OPENUPGRADE_BASE_DB: "{{ postgres_dbname }}_openupgrade_{{  macros.last_version_major(odoo_version) }}"
       OPENUPGRADE_PROJECT_DB: {{ postgres_dbname }}
       DOODBA_PROJECT_NAME: {{ project_name }}
       AUTOCOPY: "false"

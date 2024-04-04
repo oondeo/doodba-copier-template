@@ -58,3 +58,13 @@
         {%- endif %}
     {%- endcall %}
 {%- endmacro %}
+
+{# Previous Odoo version formatted with one single dot #}
+{%- macro last_version_major(odoo_version) %}
+    {{- "%.0f"|format(odoo_version-1) }}
+{%- endmacro %}
+
+{# Previous version formatted with one single dot #}
+{%- macro last_version_minor(odoo_version) %}
+    {{- "%.1f"|format(odoo_version-1) }}
+{%- endmacro %}

@@ -387,7 +387,7 @@ cidr_whitelist:
     ⚠️ It must be a list. And this is only supported if you deploy with Traefik 2+.
 
 minio_version:
-  default: "2022"
+  default: null
   help: >-
     Which Minio version do you want to deploy?
   choices:
@@ -397,7 +397,7 @@ minio_version:
     "2022": "2022"
 
 redis_version:
-  default: "6"
+  default: null
   help: >-
     Which Redis version do you want to deploy?
   choices:
