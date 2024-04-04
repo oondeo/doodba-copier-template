@@ -1,5 +1,4 @@
 git+https://github.com/OCA/openupgradelib.git@master#egg=openupgradelib
-unicodecsv
 bobtemplates.odoo
 
 {% if odoo_version < 11.0 -%}
@@ -57,143 +56,34 @@ xmlsec
 xmlsig
 xmltodict
 {% elif odoo_version < 14.0 -%}
-altair
-astor
-# auth_saml
-# auth_signup_verify_email
-Avalara
-azure-identity==1.6.0
-azure-storage-blob==12.8.1
-barcodenumber
-beautifulsoup4==4.9.3
-bokeh==1.1.0
-bonobo==0.6.4
-bonobo-sqlalchemy==0.6.1
-boto3==1.17.109
-bravado
-bs4
-cachetools>=2.0.1
-cerberus
-checkdigit
-cryptography
-cssselect
-dict2xml==1.7.0
-dicttoxml
-dropbox
--e git+https://github.com/apache/chemistry-cmislib.git@py3_compat#egg=cmislib
-elasticsearch>=7.0.0,<8.0.0
-email-validator==1.1.1
-endesive
-# error with 5.x (ConstructorError: could not determine a constructor for the tag '!record')
-extract-msg
-factur-x
-freezegun
-ftputil==5.0.1
-genshi>=0.7
-geojson==2.4.1
-gevent
-#git+https://github.com/python-lsp/python-lsp-server@v1.5.0 ## TODO: error
-google-api-python-client
-httpagentparser==1.8.1
-algoliasearch>=2.0,<3.0
-icalendar
-imageio
-lasso
-mechanicalsoup
-mechanize
-moviepy
-networkx
-num2words
-keystoneauth1==3.14.0
-matplotlib==3.4.1; python_version >= '3.7'
-mpld3
-mysqlclient==2.0.1 ## TODO: needs mysql_config
-ofxparse
-openpyxl
-numpy-financial
+altair==4.1.0
+bcrypt==3.2.0
+boto3==1.15.18
+botocore==1.18.18
+cachetools==4.2.2
+endesive==2.0.9
+imageio==2.15.0
+imageio-ffmpeg==0.4.7
+#lasso==0.0.5
+mechanize==0.4.8
+moviepy==1.0.3
+networkx==2.5.1
 oauthlib==3.2.0
-odoo-import-export-client
-odoo_test_helper
-ofxparse==0.19
-openpyxl==3.0.4
-pandas==1.0.2
-paramiko
-# password_security
-pdf2image
-phonenumbers
-pika
-premailer
-pretty_bad_protocol
-prometheus_client==0.11.0
-psycogreen
-ptpython
-py3o.formats
-py3o.template
-pycountry==22.3.5
-pycryptodome==3.10.1
-pydifact
-pyftpdlib
-pygount
-pymssql
-pyotp
-pyOpenSSL
-pysaml2
-pysftp
-python-alipay-sdk
-python-amazon-sp-api
-python-barcode
-python-chess<0.24
-python-dateutil>=2.7
-python-jose[cryptography]
-python-json-logger==0.1.5
-python-u2flib-server
-python-keystoneclient==3.22.0
-python-ldap==3.1.0
-python-linkedin @ git+https://github.com/ozgur/python-linkedin@9832fd995d6f74f14700bdbeeea3ab39151e737f
-python-magic==0.4.15
-python-swiftclient==3.9.0
-python-telegram-bot
-python-wordpress-xmlrpc==2.3
-PyYAML==4.2b4
-pyzbar
-qrcode
-Radicale==2.1.12
-raven
-redis==2.10.5
-reportlab==3.5.13
-requests
-requests-mock
-requests_mock
-requests-pkcs12
-shapely==1.6.4.post2
-simplejson
-sqlalchemy
-statsd==3.2.1
-suds-py3
-swagger-spec-validator==2.4.3
-tz
-unidecode
-# uwsgi ## TODO: error need c compiler
-validators
-validate_email
-vbuild
-vobject
-wand
-vcrpy>=2.1.1
-vcrpy-unittest
-websocket-client
-# web_widget_bokeh_chart
-# web_widget_mpld3_chart
-wechatpy[cryptography]
-woocommerce==3.0.0
-xlrd==1.2.0
-XlsxWriter==1.1.2
-xmlschema
-xmlsec==1.3.3
-xmlsig==0.1.9
-xmltodict==0.12.0
-zeep==3.2.0
-zxcvbn-python==4.4.24
+pandas==0.24.2
+paramiko==2.10.4
+ptpython==3.0.20
+pycryptodome==3.14.1
+pyotp==2.6.0
+pysftp==0.2.9
+python-json-logger==2.0.2
+python-slugify==1.2.6
+python-u2flib-server==5.0.1
+pyzbar==0.1.9
+qrcode==6.1
+redis==4.0.2
+responses==0.17.0
+unicodecsv==0.14.1
+vbuild==0.8.1
 
 {% elif odoo_version < 18.0 -%}
 Avalara==23.11.0
@@ -383,7 +273,6 @@ ofxparse==0.21; python_version > '3.9'  # (Jammy)
 olefile==0.47
 oletools==0.60.1
 openpyxl==3.1.2
-openupgradelib==3.6.0  # master is broken git+https://github.com/OCA/openupgradelib.git@master
 optionaldict==0.1.2
 os-service-types==1.7.0
 oscrypto==1.3.0
@@ -562,4 +451,5 @@ zipp==3.17.0
 zope.event==5.0
 zope.interface==6.1
 zxcvbn-python==4.4.24
+schwifty==2024.1.1
 {% endif -%}

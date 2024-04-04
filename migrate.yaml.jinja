@@ -43,7 +43,9 @@ services:
       EMAIL_FROM: "{{ smtp_default_from|default("", true) }}"
       PGDATABASE: &dbname {{ postgres_dbname }}_openupgrade_{{  macros.version_major(odoo_version) }}
       PGUSER: &dbuser "{{ postgres_username }}"
+      {% if postgres_host -%}
       PGHOST: "{{ postgres_host }}"
+      {% endif %}
       DEPTH_DEFAULT: 100
       # XXX Export these variables before running setup to own the files
       UID: "${DOODBA_GITAGGREGATE_UID:-1000}"
@@ -60,7 +62,7 @@ services:
       WDB_WEB_PORT: "{{ macros.version_major(odoo_version) }}984"
       # To avoid installing demo data export DOODBA_WITHOUT_DEMO=all
       WITHOUT_DEMO: "true"
-      OPENUPGRADE_USE_DEMO: false
+      OPENUPGRADE_USE_DEMO: "false"
       OPENUPGRADE_OLD_VERSION: "{{  int(macros.version_major(odoo_version))-1 }}.0"
       OPENUPGRADE_TARGET_VERSION: "{{ macros.version_minor(target_odoo_version) }}"
       OPENUPGRADE_BASE_VERSION: "{{ macros.version_minor(odoo_version) }}"
