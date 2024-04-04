@@ -32,6 +32,7 @@ Maybe not so frequent, but interesting anyway. 🤷
 - [When upgrading from an old template, prettier fails badly. How to update?](#when-upgrading-from-an-old-template-prettier-fails-badly-how-to-update)
 - [When upgrading from an old template, pre-commit fails to install. What can I do?](#when-upgrading-from-an-old-template-pre-commit-fails-to-install-what-can-i-do)
 - [When upgrading from an old template, copier fails with 'Invalid answer "None"'. How to update?](#when-upgrading-from-an-old-template-copier-fails-with-invalid-answer-none-how-to-update)
+- [Howto find all dependencies of a project?](#howto-find-all-dependencies-of-a-project)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 <!-- prettier-ignore-end -->
@@ -360,7 +361,7 @@ Podman 3.4+ support is experimental.
 
 ⚠ You will not have [network isolation](daily-usage.md#network-isolation) until podman
 rootless networks are fully supported. See
-https://github.com/containers/podman/issues/10672 for progress on that subject.
+<https://github.com/containers/podman/issues/10672> for progress on that subject.
 
 Example usage:
 
@@ -598,23 +599,23 @@ diff and apply the required changes to your subproject.
 Since old versions of the template are broken due to this prettier problem, you cannot
 update anymore. Well, here's the workaround:
 
-1.  Indicate to [nodeenv](http://ekalinin.github.io/nodeenv/) that your default nodejs
-    version is 14.14.0 by creating a file in `~/.nodeenvrc` with the following contents.
-    This will avoid the problem of prettier being unable to install:
+1. Indicate to [nodeenv](http://ekalinin.github.io/nodeenv/) that your default nodejs
+   version is 14.14.0 by creating a file in `~/.nodeenvrc` with the following contents.
+   This will avoid the problem of prettier being unable to install:
 
-    ```ini
-    [nodeenv]
-    node = 14.14.0
-    ```
+   ```ini
+   [nodeenv]
+   node = 14.14.0
+   ```
 
-1.  Update to latest template
-    [skipping `prettier` hook](https://pre-commit.com/#temporarily-disabling-hooks).
-    This will avoid the problem of prettier + plugin-xml being unable to execute, even
-    if properly installed:
+1. Update to latest template
+   [skipping `prettier` hook](https://pre-commit.com/#temporarily-disabling-hooks). This
+   will avoid the problem of prettier + plugin-xml being unable to execute, even if
+   properly installed:
 
-    ```bash
-    env SKIP=prettier copier update
-    ```
+   ```bash
+   env SKIP=prettier copier update
+   ```
 
 Once all your doodba subprojects are on template v2.5.0 or later, you won't need the
 `~/.nodeenvrc` anymore (hopefully) and you can safely delete it, as node version is
@@ -636,15 +637,15 @@ diff and apply the required changes to your subproject.
 Since old versions of the template might be broken if you are running the latest `pip`
 version, you cannot update anymore. Where is what you can do to avoid it:
 
-1.  Since `pre-commit` manages it's dependencies with `python-virtualenv`, you can
-    indicate which version of pip it should use. There are several ways of doing it, but
-    the easiest is with an environment variable. Just pass `VIRTUALENV_PIP=20.2` before
-    any command that fails due to this problem. For example, when running a copier
-    update:
+1. Since `pre-commit` manages it's dependencies with `python-virtualenv`, you can
+   indicate which version of pip it should use. There are several ways of doing it, but
+   the easiest is with an environment variable. Just pass `VIRTUALENV_PIP=20.2` before
+   any command that fails due to this problem. For example, when running a copier
+   update:
 
-    ```bash
-    env VIRTUALENV_PIP=20.2 copier update
-    ```
+   ```bash
+   env VIRTUALENV_PIP=20.2 copier update
+   ```
 
 Once all your doodba subprojects are on template v2.6.1 or later, you shouldn't have
 this problem, as the pre-commit hook's versions and dependencies where tailored to work
@@ -680,3 +681,32 @@ Normally the conversion would look something like this:
 | float         | 0                        |
 | json          | {}                       |
 | bool          | false                    |
+
+## Howto find all dependencies of a project?
+
+```bash
+find odoo/custom/src -name "requirements.txt" -exec cat {} \; | sort > requirements.tmp # Get requirements
+cut -d'=' -f1 requirements.tmp | cut -d'<' -f1 | cut -d'>' -f1 | cut -d' ' -f1 |  cut -d';' -f1 | uniq -d | sort > requirements.tmp2 # Get duplicates
+grep -vF -f requirements.tmp2 requirements.tmp > requirements.txt # Get non-duplicates
+sed 's/^/^/' requirements.tmp2 > requirements.tmp3
+grep -f requirements.tmp2 requirements.tmp
+uniq -u requirements.tmp > requirements.tmp2
+awk '
+  !seen[$0]++ {
+    print $0
+  } else if (NR == FNR) {
+    if (length > $0) {
+      length = length
+    } else {
+      length = $0
+    }
+  }
+  END {
+    if (length) {
+      print length
+    }
+  }
+'  requirements.tmp requirements.tmp2 > requirements.txt
+
+cut -d'=' -f1 requirements.tmp | cut -d'<' -f1 | cut -d'>' -f1 | cut -d' ' -f1 | | cut -d';' -f1 | uniq | grep -vF -f "$temp_file" "$file"
+```

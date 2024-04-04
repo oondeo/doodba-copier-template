@@ -131,11 +131,6 @@ target_odoo_version:
     16.0: 16.0
     17.0: 17.0
 
-base_odoo_db:
-  help: On migrations db to migrate
-  type: str
-  when: "{{ target_odoo_version > 0 }}"
-
 dev_ip_address:
   default: "127.0.0.1"
   help:
@@ -461,7 +456,7 @@ postgres_password:
     What will be your postgres user password?
 
 postgres_exposed:
-  default: true
+  default: false
   type: bool
   help: >-
     Do you want to expose database service?

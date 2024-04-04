@@ -89,15 +89,40 @@ website-cms: ["*"]
 website-themes: ["*"]
 
 ---
+ONLY:
+  ODOO_VERSION:
+    - "12.0"
+    - "13.0"
+    - "14.0"
+    - "15.0"
+    - "16.0"
+    - "17.0"
+server-env: ["*"]
+
+---
+ONLY:
+  ODOO_VERSION:
+    - "14.0"
+    - "15.0"
+    - "16.0"
+    - "17.0"
+openupgrade: ["*"]
+fleet: ["*"]
+
+---
 c2c_cloud_platform: ["*"]
 # snippet_html: ["*"]
 # builder: ["*"]
 # echarts: ["*"]
 
 ---
+ONLY:
+  ODOO_VERSION:
+    - "12.0"
+    - "16.0"
 # --- cybrosys hr ----
-CybroAddons: ["*"]
-OpenHRMS: ["*"]
+# CybroAddons: ["*"]
+# OpenHRMS: ["*"]
 
 #---- it projects llc-----
 itpp_pos_addons: ["*"]
@@ -136,34 +161,10 @@ smile_addons:
 # muk_misc: ["*"]
 # muk_bundles: ["*"]
 # muk_dms: ["*"]
----
-ONLY:
-  ODOO_VERSION:
-    - "12.0"
-    - "13.0"
-    - "14.0"
-    - "15.0"
-    - "16.0"
-    - "17.0"
-server-env: ["*"]
 
 ---
 ONLY:
   ODOO_VERSION:
-    - "14.0"
-    - "15.0"
-    - "16.0"
-    - "17.0"
-openupgrade: ["*"]
-fleet: ["*"]
-
----
-ONLY:
-  ODOO_VERSION:
-    - "12.0"
-    - "13.0"
-    - "14.0"
-    - "15.0"
     - "16.0"
     - "17.0"
 itpp_mail_addons: ["*"]

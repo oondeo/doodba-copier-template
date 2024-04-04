@@ -24,7 +24,7 @@ services:
       KWKHTMLTOPDF_SERVER_URL: "http://wkhtmltopdf:8080"
     tty: true
     volumes:
-    {%- if odoo_version > 0 %}
+    {%- if target_odoo_version > 0 %}
       - openupgrade_filestore_{{ project_name }}:/var/lib/odoo:rw,z
     {% else %}
       - filestore:/var/lib/odoo:z

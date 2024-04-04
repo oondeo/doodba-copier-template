@@ -100,7 +100,9 @@ services:
       - ./odoo/custom:/opt/odoo/custom:ro,z
       - ./odoo/auto:/opt/odoo/auto:rw,z
     depends_on:
+      {% if postgres_version -%}
       - db
+      {% endif %}
       {% for host in whitelisted_hosts -%}
       - proxy_{{ host|replace(".", "_") }}
       {% endfor -%}
@@ -129,6 +131,16 @@ services:
       POSTGRES_DB: *dbname
       POSTGRES_PASSWORD: odoopassword
 
+  pgweb:
+    image: docker.io/sosedoff/pgweb
+    networks: *public
+    ports:
+      - "{{ dev_ip_address }}:{{ macros.version_major(odoo_version) }}081:8081"
+    environment:
+      DATABASE_URL: postgres://{{ postgres_username }}:odoopassword@db:5432/devel?sslmode=disable
+    depends_on:
+      - db
+
   {%- if postgres_dev_exposed %}
   db_proxy:
     image: tecnativa/whitelist
@@ -143,15 +155,6 @@ services:
   {%- endif %}
   {%- endif %}
 
-  pgweb:
-    image: docker.io/sosedoff/pgweb
-    networks: *public
-    ports:
-      - "{{ dev_ip_address }}:{{ macros.version_major(odoo_version) }}081:8081"
-    environment:
-      DATABASE_URL: postgres://{{ postgres_username }}:odoopassword@db:5432/devel?sslmode=disable
-    depends_on:
-      - db
 
   smtp:
     extends:
@@ -194,10 +197,12 @@ networks:
   public:
 
 volumes:
-  {%- if odoo_version > 0 %}
+  {%- if target_odoo_version > 0 %}
   openupgrade_filestore_{{ project_name }}:
   {% else %}
   filestore:
   {%- endif %}
+  {% if postgres_version -%}
   db:
+  {%- endif %}
   s3:

@@ -1,0 +1,67 @@
+#!/bin/bash
+
+ODOO_MOUNTPOINT="${ODOO_MOUNTPOINT:/mnt/odoo}"
+
+# set -e
+
+if [ "$AUTOCOPY" == "true" ]
+then
+    ## Make backup
+    if [ -d "/var/lib/odoo/filestore/${PGDATABASE}" ]
+    then
+        log INFO Backing up ${PGDATABASE} to ${PGDATABASE}$(date +%Y%m%d%H%M)
+        psql -c "CREATE DATABASE ${PGDATABASE}$(date +%Y%m%d%H%M) WITH TEMPLATE ${PGDATABASE} OWNER ${PGUSER}"
+        psql -d template1 -c "DROP DATABASE ${PGDATABASE}"
+        rm -rf /var/lib/odoo/filestore/${PGDATABASE}$(date +%Y%m%d%H%M)
+        mv /var/lib/odoo/filestore/${PGDATABASE} /var/lib/odoo/filestore/${PGDATABASE}$(date +%Y%m%d%H%M)
+    fi
+fi
+if [ -d "/var/lib/odoo/filestore/${PGDATABASE}" ]
+then
+    ## Exits end processing
+    exit 0
+fi
+## Migrate database from OPENUPGRADE_BASE_DB to PGDATABASE
+log INFO Creating /var/lib/odoo/filestore/${PGDATABASE}
+if [ ! -d "/var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB}" ]
+then
+    if [ -d "/var/lib/odoo/filestore/${OPENUPGRADE_PROJECT_DB}" ]
+    then
+        log INFO Creating /var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB}
+        cp -a /var/lib/odoo/filestore/${OPENUPGRADE_PROJECT_DB} /var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB}
+        cp /var/lib/odoo/filestore/${OPENUPGRADE_PROJECT_DB}.sql /var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB}.sql
+        #psql -d ${OPENUPGRADE_PROJECT_DB} -c "CREATE DATABASE ${OPENUPGRADE_BASE_DB} WITH TEMPLATE ${OPENUPGRADE_PROJECT_DB} OWNER ${PGUSER}"
+    fi
+fi
+# restore from sql (to migrate between postgresql versions)
+if [ -f "/var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB}.sql" ]
+then
+    cp -a /var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB} /var/lib/odoo/filestore/${PGDATABASE}
+    psql -d "template1" -c "CREATE DATABASE ${PGDATABASE} OWNER ${PGUSER}"
+    psql -d "${PGDATABASE}" < "/var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB}.sql"
+    exit 0
+fi
+if [ -f "${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB}.sql" ]
+then
+    log INFO Using ${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB}
+    cp -a ${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB} /var/lib/odoo/filestore/${PGDATABASE}
+    psql -d "template1" -c "CREATE DATABASE ${PGDATABASE} OWNER ${PGUSER}"
+    psql -d  "${PGDATABASE}" < "${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB}.sql"
+    exit 0
+fi
+if [ -d "/var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB}" ]
+then
+    cp -a /var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB} /var/lib/odoo/filestore/${PGDATABASE}
+    psql -d "${OPENUPGRADE_BASE_DB}" -c "CREATE DATABASE ${PGDATABASE} WITH TEMPLATE ${OPENUPGRADE_BASE_DB} OWNER ${PGUSER}"
+    exit 0
+fi
+if [ -d "${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB}" ]
+then
+    log INFO Using ${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB}
+    cp -a ${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB} /var/lib/odoo/filestore/${PGDATABASE}
+    psql -d ${OPENUPGRADE_BASE_DB} -c "CREATE DATABASE ${PGDATABASE} WITH TEMPLATE ${OPENUPGRADE_BASE_DB} OWNER ${PGUSER}"
+    exit 0
+fi
+
+log ERROR Could not find ${OPENUPGRADE_BASE_DB} to migrate to ${PGDATABASE}
+exit 1

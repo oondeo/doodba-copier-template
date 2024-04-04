@@ -31,7 +31,7 @@ services:
       - public
     volumes:
       - openupgrade_filestore_{{ project_name }}:/var/lib/odoo:rw,z
-      - ./odoo/custom:/opt/odoo/custom:ro,z
+      - ./odoo/custom:/opt/odoo/custom:rw,z
       - ./odoo/auto:/opt/odoo/auto:rw,z
     environment:
       {%- if odoo_version >= 14 %}
@@ -41,14 +41,14 @@ services:
       {%- endif %}
       OPENBLAS_NUM_THREADS: 1
       EMAIL_FROM: "{{ smtp_default_from|default("", true) }}"
-      PGDATABASE: &dbname {{ postgres_dbname }}
+      PGDATABASE: &dbname {{ postgres_dbname }}_openupgrade_{{  macros.version_major(odoo_version) }}
       PGUSER: &dbuser "{{ postgres_username }}"
       PGHOST: "{{ postgres_host }}"
       DEPTH_DEFAULT: 100
       # XXX Export these variables before running setup to own the files
       UID: "${DOODBA_GITAGGREGATE_UID:-1000}"
       GID: "${DOODBA_GITAGGREGATE_GID:-1000}"
-      UMASK: "$DOODBA_UMASK"     
+      UMASK: "$DOODBA_UMASK"
       PROXY_MODE: "false"
       DOODBA_ENVIRONMENT: "devel"
       LIST_DB: "true"
@@ -59,16 +59,45 @@ services:
       SMTP_PORT: "1025"
       WDB_WEB_PORT: "{{ macros.version_major(odoo_version) }}984"
       # To avoid installing demo data export DOODBA_WITHOUT_DEMO=all
-      WITHOUT_DEMO: "true"       
+      WITHOUT_DEMO: "true"
       OPENUPGRADE_USE_DEMO: false
-      OPENUPGRADE_TARGET_VERSION: {{ target_odoo_version }}
+      OPENUPGRADE_OLD_VERSION: "{{  int(macros.version_major(odoo_version))-1 }}.0"
+      OPENUPGRADE_TARGET_VERSION: "{{ macros.version_minor(target_odoo_version) }}"
       OPENUPGRADE_BASE_VERSION: "{{ macros.version_minor(odoo_version) }}"
-      OPENUPGRADE_BASE_DB: {{ base_odoo_db }}
-      # OPENUPGRADE_OLD_DB
+      OPENUPGRADE_BASE_DB: "{{ postgres_dbname }}_openupgrade_{{  int(macros.version_major(odoo_version))-1 }}"
+      OPENUPGRADE_PROJECT_DB: {{ postgres_dbname }}
       DOODBA_PROJECT_NAME: {{ project_name }}
+      AUTOCOPY: "false"
+      AGGREGATE: "true"
+    # user: root
+    entrypoint: /opt/odoo/custom/bin/migrate
+    command:
+      - odoo
+      - --limit-memory-soft=0
+      - --limit-time-real-cron=9999999
+      - --limit-time-real=9999999
+      - --workers=0
+      - --update=all
+      - --stop-after-init
+    {%- if odoo_version >= 14 %}
+      - --load=base,web,openupgrade_framework
+      - --upgrade-path=/opt/odoo/custom/src/openupgrade/openupgrade_scripts/scripts
+    {%- endif %}
+  {% if postgres_version -%}
+    depends_on:
+      - db
 
-    user: root
-    entrypoint: migrate
+  db:
+    image: ghcr.io/tecnativa/postgres-autoconf:{{ postgres_version }}-alpine
+    shm_size: 4gb
+    environment:
+      POSTGRES_DB: *dbname
+      POSTGRES_USER: *dbuser
+      CONF_EXTRA: |
+        work_mem = 512MB
+    volumes:
+      - db:/var/lib/postgresql/data:z
+  {%- endif %}
 
 networks:
   public:
@@ -76,3 +105,6 @@ networks:
 volumes:
   openupgrade_filestore_{{ project_name }}:
     external: true
+  {% if postgres_version -%}
+  db:
+  {%- endif %}

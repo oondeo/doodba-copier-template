@@ -70,6 +70,20 @@ Once you installed everything, you can now use Copier to copy this template:
 copier copy --vcs-ref oondeo --trust gh:oondeo/doodba-copier-template ~/path/to/your/subproject
 ```
 
+Use dirty changes on the template to generate your subproject
+
+```bash
+copier copy --vcs-ref HEAD --trust doodba-copier-template ~/path/to/your/subproject
+```
+
+Use a copier answers file
+
+```bash
+mkdir ~/path/to/your/subproject
+cp answers.yml ~/path/to/your/subproject/.copier-answers.yml
+copier copy --vcs-ref HEAD --trust doodba-copier-template ~/path/to/your/subproject
+```
+
 Copier will ask you a lot of questions. Answer them to properly generate the template.
 
 Notes:

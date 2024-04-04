@@ -4,6 +4,7 @@ This file is to be executed with https://www.pyinvoke.org/ in Python 3.8.1+.
 
 Contains common helpers to develop using this child project.
 """
+import ast
 import json
 import os
 import shutil
@@ -399,6 +400,10 @@ def write_code_workspace_file(c, cw_path=None):
     }
     # Sort project folders
     cw_config["folders"].sort(key=lambda x: x["path"])
+    ## remove folders if there are many
+    if len(cw_config["folders"]) > 5:
+        cw_config["folders"] = []
+
     # Put Odoo folder just before private and top folder and map to debugpy
     odoo = SRC_PATH / "odoo"
     if odoo.is_dir():
@@ -1079,7 +1084,7 @@ def module_migrate(c, version="", source="", modules=""):
 @task
 def check_openupgrade_volune(c):
     with c.cd(str(PROJECT_ROOT)):
-        cmd = "docker volume create openupgrade_filestore_{PROJECT_NAME}"
+        cmd = f"docker volume create openupgrade_filestore_{PROJECT_NAME}"
         try:
             c.run(cmd, env=UID_ENV, pty=True)
         except Exception as e:
@@ -1097,13 +1102,91 @@ def migrate_build(c, pull=True):
 
 
 @task(check_openupgrade_volune)
-def migrate(c, detach=True):
-    """Build docker images."""
+def migrate(c, detach=False, copy=True):
+    """Run migration."""
     cmd = DOCKER_COMPOSE_CMD + " -f migrate.yaml up"
     if detach:
         cmd += " -d"
+    if not copy:
+        cmd += " -e AUTOCOPY=false"
     with c.cd(str(PROJECT_ROOT)):
         c.run(cmd, env=UID_ENV, pty=True)
+
+
+@task(check_openupgrade_volune)
+def migrate_dump(c):
+    """Dump Database."""
+    cmd = DOCKER_COMPOSE_CMD + " -f migrate.yaml run --rm odoo dump"
+    with c.cd(str(PROJECT_ROOT)):
+        c.run(cmd, env=UID_ENV, pty=True)
+
+
+@task(check_openupgrade_volune)
+def migrate_shell(c):
+    """Enter in container."""
+    cmd = DOCKER_COMPOSE_CMD + " -f migrate.yaml run --rm odoo shell"
+    with c.cd(str(PROJECT_ROOT)):
+        c.run(cmd, env=UID_ENV, pty=True)
+
+
+def _check_requirements(f):
+    return {line.strip() for line in open(f)}
+
+
+def _check_manifest(f):
+    with open(f) as fd:
+        data = eval(fd.read())
+        requirements = set()
+        for v in data.get("external_dependencies", {}).get("python", []):
+            requirements.add(v)
+        return requirements
+
+
+def _check_setup(path):
+    parsed = ast.parse(open(path).read())
+    requirements = set()
+    for node in parsed.body:
+        if not isinstance(node, ast.Expr):
+            continue
+        if not isinstance(node.value, ast.Call):
+            continue
+        if node.value.func.id != "setup":
+            continue
+        for keyword in node.value.keywords:
+            if keyword.arg == "install_requires":
+                req = ast.literal_eval(keyword.value)
+                # print("\n".join(req))
+                requirements |= set(req)
+    return requirements
+
+
+@task()
+def requirements(c):
+    """List all required dependencies."""
+    base = os.path.join(str(PROJECT_ROOT), "odoo", "custom", "src")
+    requirements = set()
+    for src_dir in os.listdir(base):
+        src_dir = os.path.join(base, src_dir)
+        if src_dir.endswith("odoo") or os.path.isfile():
+            continue
+        for mod_dir in os.listdir(src_dir):
+            mod_dir = os.path.join(mod_dir, mod_dir)
+            if mod_dir.endswith("requiremets.txt"):
+                requirements |= _check_requirements(mod_dir)
+                continue
+            if os.path.isfile(mod_dir):
+                continue
+            for f in os.listdir(mod_dir):
+                f = os.path.join(mod_dir, f)
+                if f.endswith("requiremets.txt"):
+                    requirements |= _check_requirements(f)
+                    continue
+                if f.endswith("setup.py"):
+                    requirements |= _check_setup(f)
+                    continue
+                if f.endswith("__manifest__.py"):
+                    requirements |= _check_manifest(f)
+                    continue
 
 
 @task(
