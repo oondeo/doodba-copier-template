@@ -197,11 +197,11 @@ networks:
   public:
 
 volumes:
-  {%- if target_odoo_version > 0 %}
-  openupgrade_filestore_{{ project_name }}:
-  {% else %}
   filestore:
-  {%- endif %}
+  {% if custom_filestore %}
+    external: true
+    name: {{ custom_filestore }}
+  {% endif %}
   {% if postgres_version -%}
   db:
   {%- endif %}

@@ -106,7 +106,10 @@ networks:
 
 volumes:
   openupgrade_filestore_{{ project_name }}:
+  {% if custom_filestore %}
     external: true
+    name: {{ custom_filestore }}
+  {% endif %}
   {% if postgres_version -%}
   db:
   {%- endif %}

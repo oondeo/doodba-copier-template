@@ -131,6 +131,10 @@ target_odoo_version:
     16.0: 16.0
     17.0: 17.0
 
+custom_filestore:
+  default: ""
+  help: "Name of the external volume to use as filestore (must be created manually)"
+
 dev_ip_address:
   default: "127.0.0.1"
   help:

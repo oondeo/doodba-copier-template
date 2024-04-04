@@ -28,7 +28,9 @@ services:
       SMTP_SERVER: smtplocal
       {%- endif %}
     depends_on:
+      {% if postgres_version -%}
       - db
+      {% endif %}
       {%- if smtp_relay_host %}
       - smtp
       {%- endif %}
@@ -142,11 +144,11 @@ volumes:
   {%- if backup_dst %}
   backup_cache:
   {%- endif %}
-  {%- if odoo_version > 0 %}
-  openupgrade_filestore_{{ project_name }}:
-  {% else %}
   filestore:
-  {%- endif %}
+  {% if custom_filestore %}
+    external: true
+    name: {{ custom_filestore }}
+  {% endif %}
   db:
   {%- if smtp_relay_host %}
   mailconfig:
