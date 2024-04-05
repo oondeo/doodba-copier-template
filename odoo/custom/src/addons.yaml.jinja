@@ -109,13 +109,14 @@ ONLY:
 openupgrade: ["*"]
 fleet: ["*"]
 
+{%- if target_odoo_version < 7 %}
+
 ---
 c2c_cloud_platform: ["*"]
 # snippet_html: ["*"]
 # builder: ["*"]
 # echarts: ["*"]
 
-{%- if target_odoo_version < 7 %}
 ---
 ONLY:
   ODOO_VERSION:

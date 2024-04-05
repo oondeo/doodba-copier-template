@@ -7,6 +7,7 @@
 # You can clean your git project before if you want to have all really clean:
 #
 #   git clean -ffd
+# /opt/odoo/custom/bin/migrate odoo --limit-memory-soft=0 --limit-time-real-cron=9999999 --limit-time-real=9999999 --stop-after-init --log-handler=:DEBUG --log-handler=odoo.sql_db:WARNING --load=base,web,openupgrade_framework > /opt/odoo/auto/err.log 2>&1
 
 version: "2.4"
 
@@ -72,6 +73,7 @@ services:
       AUTOCOPY: "false"
       AGGREGATE: "true"
       ODOO_MIGRATE: "true"
+      LOG_LEVEL: "DEBUG"
     # user: root
     entrypoint: /opt/odoo/custom/bin/migrate
     command:
@@ -79,14 +81,15 @@ services:
       - --limit-memory-soft=0
       - --limit-time-real-cron=9999999
       - --limit-time-real=9999999
-      - --workers=0
       - --update=all
+      - --log-handler=:DEBUG
+      - --log-handler=werkzeug:WARNING
+      - --log-handler=odoo.sql_db:WARNING
       - --stop-after-init
     {%- if odoo_version >= 14 %}
       - --load=base,web,openupgrade_framework
-      - --upgrade-path=/opt/odoo/custom/src/openupgrade/openupgrade_scripts/scripts
     {%- endif %}
-  {% if postgres_version -%}
+  {%- if postgres_version -%}
     depends_on:
       - db
 
@@ -107,10 +110,10 @@ networks:
 
 volumes:
   openupgrade_filestore_{{ project_name }}:
-  {% if custom_filestore %}
+  {%- if custom_filestore %}
     external: true
     name: {{ custom_filestore }}
-  {% endif %}
-  {% if postgres_version -%}
+  {%- endif %}
+  {%- if postgres_version -%}
   db:
   {%- endif %}

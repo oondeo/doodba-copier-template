@@ -1138,6 +1138,8 @@ def _check_manifest(f):
         data = eval(fd.read())
         requirements = set()
         for v in data.get("external_dependencies", {}).get("python", []):
+            if v.strip().startswith("#"):
+                continue
             requirements.add(v)
         return requirements
 
@@ -1161,24 +1163,26 @@ def _check_setup(path):
 
 
 @task()
-def requirements(c):
+def requirements(c, odoo=False):
     """List all required dependencies."""
     base = os.path.join(str(PROJECT_ROOT), "odoo", "custom", "src")
-    requirements = set()
+    requirements = {"--prefer-binary"}
     for src_dir in os.listdir(base):
         src_dir = os.path.join(base, src_dir)
-        if src_dir.endswith("odoo") or os.path.isfile():
+        if os.path.isfile(src_dir):
+            continue
+        if not odoo and src_dir.endswith("odoo"):
             continue
         for mod_dir in os.listdir(src_dir):
-            mod_dir = os.path.join(mod_dir, mod_dir)
-            if mod_dir.endswith("requiremets.txt"):
+            mod_dir = os.path.join(src_dir, mod_dir)
+            if mod_dir.endswith("requirements.txt"):
                 requirements |= _check_requirements(mod_dir)
                 continue
             if os.path.isfile(mod_dir):
                 continue
             for f in os.listdir(mod_dir):
                 f = os.path.join(mod_dir, f)
-                if f.endswith("requiremets.txt"):
+                if f.endswith("requirements.txt"):
                     requirements |= _check_requirements(f)
                     continue
                 if f.endswith("setup.py"):
@@ -1187,6 +1191,7 @@ def requirements(c):
                 if f.endswith("__manifest__.py"):
                     requirements |= _check_manifest(f)
                     continue
+    print("\n".join(sorted(requirements)))
 
 
 @task(

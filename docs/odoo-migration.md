@@ -57,7 +57,8 @@ cd odoo13
 invoke migrate
 ```
 
-8. Read all logs and fix errors on database
+8. Read all logs from container and database container and fix errors on database. Copy
+   these fixes to a sql script and apply to original database after all process
 9. Launch migrate again
 10. Dump database to next step
 
