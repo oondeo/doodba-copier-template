@@ -1102,13 +1102,19 @@ def migrate_build(c, pull=True):
 
 
 @task(check_openupgrade_volune)
-def migrate(c, detach=False, copy=True):
+def migrate(c, detach=False, copy=False, agg=True):
     """Run migration."""
     cmd = DOCKER_COMPOSE_CMD + " -f migrate.yaml up"
     if detach:
         cmd += " -d"
-    if not copy:
+    if copy:
+        cmd += " -e AUTOCOPY=true"
+    else:
         cmd += " -e AUTOCOPY=false"
+    if agg:
+        cmd += " -e AGGREGATE=false"
+    else:
+        cmd += " -e AGGREGATE=true"
     with c.cd(str(PROJECT_ROOT)):
         c.run(cmd, env=UID_ENV, pty=True)
 
