@@ -8,7 +8,6 @@
     "firefox-devtools.vscode-firefox-debug",
     "mrorz.language-gettext",
     "ms-azuretools.vscode-docker",
-    "ms-python.black-formatter",
     "ms-python.python",
     "msjsdiag.debugger-for-chrome",
     "redhat.vscode-xml",
@@ -22,6 +21,11 @@
     "teamchilla.blueprint",
     "jigar-patel.OdooSnippets",
     "scapigliato.vsc-odoo-development",
-    "mechatroner.rainbow-csv"
+    "mechatroner.rainbow-csv",
+    "trinhanhngoc.vscode-odoo",
+    "mvintg.odoo-file",
+    "jigar-patel.OdooSnippets",
+    "cweijan.vscode-database-client2",
+    "Trunk.io"
   ]
 }

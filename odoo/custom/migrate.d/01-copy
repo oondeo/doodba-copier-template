@@ -37,29 +37,33 @@ fi
 if [ -f "/var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB}.sql" ]
 then
     cp -a /var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB} /var/lib/odoo/filestore/${PGDATABASE}
-    psql -d "template1" -c "CREATE DATABASE ${PGDATABASE} OWNER ${PGUSER}"
+    psql -d "template1" -c "CREATE DATABASE '${PGDATABASE}' OWNER ${PGUSER}"
     psql -d "${PGDATABASE}" < "/var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB}.sql"
+    psql -d "${PGDATABASE}" -c "VACUUM FULL;"
     exit 0
 fi
 if [ -f "${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB}.sql" ]
 then
     log INFO Using ${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB}
     cp -a ${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB} /var/lib/odoo/filestore/${PGDATABASE}
-    psql -d "template1" -c "CREATE DATABASE ${PGDATABASE} OWNER ${PGUSER}"
+    psql -d "template1" -c "CREATE DATABASE '${PGDATABASE}' OWNER ${PGUSER}"
     psql -d  "${PGDATABASE}" < "${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB}.sql"
+    psql -d "${PGDATABASE}" -c "VACUUM FULL;"
     exit 0
 fi
 if [ -d "/var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB}" ]
 then
     cp -a /var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB} /var/lib/odoo/filestore/${PGDATABASE}
-    psql -d "${OPENUPGRADE_BASE_DB}" -c "CREATE DATABASE ${PGDATABASE} WITH TEMPLATE ${OPENUPGRADE_BASE_DB} OWNER ${PGUSER}"
+    psql -d "${OPENUPGRADE_BASE_DB}" -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${PGDATABASE}' AND leader_pid IS NULL;CREATE DATABASE ${PGDATABASE} WITH TEMPLATE '${OPENUPGRADE_BASE_DB}' OWNER ${PGUSER}"
+    psql -d "${PGDATABASE}" -c "VACUUM FULL;"
     exit 0
 fi
 if [ -d "${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB}" ]
 then
     log INFO Using ${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB}
     cp -a ${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB} /var/lib/odoo/filestore/${PGDATABASE}
-    psql -d ${OPENUPGRADE_BASE_DB} -c "CREATE DATABASE ${PGDATABASE} WITH TEMPLATE ${OPENUPGRADE_BASE_DB} OWNER ${PGUSER}"
+    psql -d "template1" -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${OPENUPGRADE_BASE_DB}' AND leader_pid IS NULL;CREATE DATABASE '${PGDATABASE}' WITH TEMPLATE '${OPENUPGRADE_BASE_DB}' OWNER ${PGUSER}"
+    psql -d "${PGDATABASE}" -c "VACUUM FULL;"
     exit 0
 fi
 

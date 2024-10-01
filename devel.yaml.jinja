@@ -75,6 +75,9 @@ services:
       LIST_DB: "true"
       DEBUGPY_ENABLE: "${DOODBA_DEBUGPY_ENABLE:-0}"
       PGDATABASE: &dbname devel
+      {% if postgres_host -%}
+      PGHOST: "{{ postgres_host }}"
+      {% endif %}
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONOPTIMIZE: ""
       PYTHONPATH: /opt/odoo/custom/src/odoo
@@ -97,7 +100,7 @@ services:
       ODOO_SESSION_REDIS_EXPIRATION_ANONYMOUS: "10800"
       {% endif -%}
     volumes:
-      - ./odoo/custom:/opt/odoo/custom:ro,z
+      - ./odoo/custom:/opt/odoo/custom:rw,z
       - ./odoo/auto:/opt/odoo/auto:rw,z
     depends_on:
       {% if postgres_version -%}

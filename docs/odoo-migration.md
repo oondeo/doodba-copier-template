@@ -68,3 +68,13 @@ invoke migrate-dump
 
 11. Go to next version and repeat steps 7-10
 12. Apply all fixes to original database
+13. REVIEW:
+
+- Invoice format for all invoice types
+- Invoice sequence: account_move_name_sequence
+- Proyect: user_id -> user_ids
+- SII certificates
+- Timesheets
+- In invoices show from diferent journals.
+- Name of tax Groups in diferent languages.
+- Time off types (Holidays)

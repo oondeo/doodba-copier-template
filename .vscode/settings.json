@@ -27,5 +27,6 @@
   "python.testing.pytestArgs": ["-nauto", "tests"],
   "python.testing.pytestEnabled": true,
   "python.testing.unittestEnabled": false,
-  "search.followSymlinks": false
+  "search.followSymlinks": false,
+  "python.languageServer": "None"
 }
