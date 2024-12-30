@@ -1228,3 +1228,18 @@ def password_reset(c, database, password, user="admin"):
     """
     with c.cd(str(PROJECT_ROOT)):
         c.run(cmd, env=UID_ENV, pty=True)
+
+
+@task()
+def git_reset(c):
+    with c.cd(str(PROJECT_ROOT)):
+        for name in os.listdir("odoo/custom/src"):
+            if name.endswith("/private"):
+                continue
+            try:
+                c.cd(name)
+                c.run("git reset --hard")  # git reset --hard origin/16.0
+                c.run("git clean -fd")
+            except Exception as e:
+                _logger.error(e)
+            c.cd(str(PROJECT_ROOT))
