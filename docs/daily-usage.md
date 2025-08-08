@@ -115,6 +115,13 @@ All of the above in one shot:
 invoke develop img-build git-aggregate resetdb start
 ```
 
+Generate production addons.yaml:
+
+```bash
+invoke addons >> odoo/custom/src/addons.yaml
+
+```
+
 See the other tasks we ship for you with:
 
 ```bash
@@ -557,7 +564,7 @@ Then open `http://localhost:$SomeFreePort`.
 ### GeoLite2
 
 To enable geoip support for Odoo you need to signup for a Maxmind account for GeoLite2:
-https://www.maxmind.com/en/geolite2/signup
+<https://www.maxmind.com/en/geolite2/signup>
 
 Create a license key in your maxmind account and provide your account id and license key
 on build to the scaffolding.

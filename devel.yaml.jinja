@@ -72,6 +72,7 @@ services:
     environment:
       PROXY_MODE: "false"
       DOODBA_ENVIRONMENT: "${DOODBA_ENVIRONMENT-devel}"
+      RUNNING_ENV: "${DOODBA_ENVIRONMENT-devel}"
       LIST_DB: "true"
       DEBUGPY_ENABLE: "${DOODBA_DEBUGPY_ENABLE:-0}"
       PGDATABASE: &dbname devel
@@ -102,6 +103,9 @@ services:
     volumes:
       - ./odoo/custom:/opt/odoo/custom:rw,z
       - ./odoo/auto:/opt/odoo/auto:rw,z
+      {% if not custom_filestore %}
+      - ./odoo/auto/storage/filestore:/var/lib/odoo:rw,z
+      {% endif %}
     depends_on:
       {% if postgres_version -%}
       - db
@@ -118,6 +122,7 @@ services:
       - --limit-time-real-cron=9999999
       {%- endif %}
       - --limit-time-real=9999999
+      - --max-cron-threads=0
       - --workers=0
       {%- if odoo_version == 9 %}
       - --dev

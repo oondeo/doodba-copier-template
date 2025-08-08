@@ -27,6 +27,7 @@ services:
       PROXY_MODE: "{% if odoo_proxy %}true{% else %}false{% endif %}"
       DB_FILTER: "{{ odoo_dbfilter }}"
       DOODBA_ENVIRONMENT: "${DOODBA_ENVIRONMENT-prod}"
+      RUNNING_ENV: "${DOODBA_ENVIRONMENT-prod}"
       INITIAL_LANG: "{{ odoo_initial_lang }}"
       {%- if smtp_relay_host %}
       SMTP_SERVER: smtplocal

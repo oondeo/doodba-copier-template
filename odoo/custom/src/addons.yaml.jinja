@@ -1,12 +1,7 @@
 ---
-# ONLY:
-#   ODOO_VERSION:
-#     - '11.0'
-#     - '12.0'
-# ---
-# ONLY:
-#   LANG:
-#     - 'es_ES.UTF-8'
+ONLY:
+  DOODBA_ENVIRONMENT:
+    - 'devel'
 # --- oca ---
 account-analytic: ["*"]
 account-closing: ["*"]
@@ -90,6 +85,8 @@ website-themes: ["*"]
 
 ---
 ONLY:
+  DOODBA_ENVIRONMENT:
+    - 'devel'
   ODOO_VERSION:
     - "12.0"
     - "13.0"
@@ -101,6 +98,8 @@ server-env: ["*"]
 
 ---
 ONLY:
+  DOODBA_ENVIRONMENT:
+    - 'devel'
   ODOO_VERSION:
     - "14.0"
     - "15.0"
@@ -112,6 +111,9 @@ fleet: ["*"]
 {%- if target_odoo_version < 7 %}
 
 ---
+ONLY:
+  DOODBA_ENVIRONMENT:
+    - 'devel'
 c2c_cloud_platform: ["*"]
 # snippet_html: ["*"]
 # builder: ["*"]
@@ -119,6 +121,8 @@ c2c_cloud_platform: ["*"]
 
 ---
 ONLY:
+  DOODBA_ENVIRONMENT:
+    - 'devel'
   ODOO_VERSION:
     - "12.0"
     - "16.0"
@@ -166,6 +170,8 @@ smile_addons:
 
 ---
 ONLY:
+  DOODBA_ENVIRONMENT:
+    - 'devel'
   ODOO_VERSION:
     - "16.0"
     - "17.0"

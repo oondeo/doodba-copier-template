@@ -28,3 +28,7 @@
 
 # Project-specific docker configurations
 /.docker/
+.goosehints
+CONTEXT.md
+.hints
+.context
