@@ -1430,7 +1430,8 @@ def addons(c, output_file=None):
     # Prepare YAML output
     yaml_lines = ["---", "ONLY:", "  DOODBA_ENVIRONMENT: ['prod']"]
     for parent, modules in module_dir_map.items():
-        if parent in ["addons", "private"]: continue
+        if parent in ["addons", "private"]:
+            continue
         yaml_lines.append(f"{parent}:")
         for mod in modules:
             yaml_lines.append(f"  - {mod}")
