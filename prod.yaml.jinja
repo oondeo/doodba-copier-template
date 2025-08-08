@@ -25,13 +25,18 @@ services:
     environment:
       LIST_DB: "{{ odoo_listdb | tojson }}"
       PROXY_MODE: "{% if odoo_proxy %}true{% else %}false{% endif %}"
-      DB_FILTER: "{{ odoo_dbfilter }}"
+      DB_FILTER: "{{ odoo_dbfilter | replace('$', '$$') }}"
       DOODBA_ENVIRONMENT: "${DOODBA_ENVIRONMENT-prod}"
       RUNNING_ENV: "${DOODBA_ENVIRONMENT-prod}"
       INITIAL_LANG: "{{ odoo_initial_lang }}"
+      LIST_DB: "{{ odoo_listdb | tojson }}"
+      {%- if odoo_version >= 16.0 %}
+      ODOO_BUS_PUBLIC_SAMESITE_WS: 1
+      {%- endif %}
       {%- if smtp_relay_host %}
       SMTP_SERVER: smtplocal
       {%- endif %}
+      PGHOST: {{ _key }}-db
     depends_on:
       {% if postgres_version -%}
       - db
@@ -94,23 +99,32 @@ services:
     extends:
       file: common.yaml
       service: db
+    environment:
+      DB_HOST: {{ _key }}-db
     env_file:
       - .docker/db-creation.env
     restart: unless-stopped
-    {%- if postgres_exposed and odoo_proxy == "traefik" %}
     networks:
       default:
+        aliases:
+          - "{{ _key }}-db"
+    {%- if postgres_exposed %}
+    {%- if traefik_version >= 3 %}
       inverseproxy_shared:
     labels:
       traefik.enable: "true"
       traefik.docker.network: "inverseproxy_shared"
-      {{- traefik2_labels.database(
+      {{- traefik3_labels_2.database(
         domains_prod,
         postgres_cidr_whitelist,
         _key,
         postgres_exposed_port,
         project_name,
       ) }}
+    {%- else %}
+    ports:
+      - "{{ postgres_exposed_port }}:5432"
+    {%- endif %}
     {%- endif %}
       {%- endif %}
 

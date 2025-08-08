@@ -99,7 +99,7 @@ _migrations:
 odoo_version:
   help: On which odoo version is it based?
   type: float
-  default: 16.0
+  default: 18.0
   choices:
     - 7.0
     - 8.0
@@ -112,6 +112,7 @@ odoo_version:
     - 15.0
     - 16.0
     - 17.0
+    - 18.0
 
 target_odoo_version:
   help: On migrations final odoo version, leave default if you are not migrating
@@ -202,8 +203,13 @@ odoo_listdb:
   default: true
   type: bool
   help: >-
-    Do you want to list databases publicly?. Some backup modules does not work with this
-    set to false
+    Do you want to list databases publicly in the production environment?
+
+odoo_listdb_staging:
+  default: "{{ odoo_listdb }}"
+  type: bool
+  help: >-
+    Do you want to list databases publicly in the staging environment?
 
 odoo_oci_image:
   type: str
@@ -421,7 +427,7 @@ redis_version:
     "6.0.16": "6.0.16"
 
 postgres_version:
-  default: "15"
+  default: "16"
   help: >-
     Which PostgreSQL version do you want to deploy? (Recommended: for new instances
     always use the latest version. Version 9.6 has no backup support.)
@@ -434,6 +440,7 @@ postgres_version:
     "13": "13"
     "14": "14"
     "15": "15"
+    "16": "16"
   validator: >-
     {% if postgres_version|int > 0 %} {% if (odoo_version >= 16.0 and
     postgres_version|int < 12) or (odoo_version >= 14.0 and postgres_version|int < 10)
@@ -479,7 +486,7 @@ postgres_exposed:
 postgres_exposed_port:
   default: 5432
   type: int
-  when: &db_exposed "{{ postgres_exposed and true }}"
+  when: &db_exposed "{{ postgres_exposed and traefik_version != 3 }}"
   help: >-
     Indicate the port to connect to the database.
 

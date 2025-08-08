@@ -23,6 +23,7 @@ services:
       PGDATABASE: &dbname {{ postgres_dbname }}
       PGUSER: &dbuser "{{ postgres_username }}"
       KWKHTMLTOPDF_SERVER_URL: "http://wkhtmltopdf:8080"
+      PROXY_MODE: "{% if odoo_proxy %}true{% else %}false{% endif %}"
     tty: true
     volumes:
       - filestore:/var/lib/odoo:z
@@ -65,9 +66,9 @@ services:
       - SYS_PTRACE
     environment:
       DEFAULT_RELAY_HOST: "[{{ smtp_relay_host }}]:{{ smtp_relay_port }}"
-      {% if smtp_relay_version|float < 11.0 -%}
+      {%- if smtp_relay_version|float < 11.0 %}
       DMS_DEBUG: 0
-      {% else %}
+      {%- else %}
       LOG_LEVEL: info
       {%- endif %}
       ENABLE_SRS: 1
@@ -94,7 +95,7 @@ services:
     init: true
     environment:
       DB_VERSION: "{{ postgres_version or 'latest' }}"
-      DBS_TO_INCLUDE: "{{ odoo_dbfilter }}"
+      DBS_TO_INCLUDE: "{{ odoo_dbfilter | replace('$', '$$') | replace('%d', '.*') | replace('%h', '.*') }}"
       DST: "{{ backup_dst }}"
       {%- if smtp_relay_host %}
       EMAIL_FROM: "{{ backup_email_from }}"

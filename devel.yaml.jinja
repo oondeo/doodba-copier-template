@@ -73,6 +73,7 @@ services:
       PROXY_MODE: "false"
       DOODBA_ENVIRONMENT: "${DOODBA_ENVIRONMENT-devel}"
       RUNNING_ENV: "${DOODBA_ENVIRONMENT-devel}"
+      INITIAL_LANG: "{{ odoo_initial_lang }}"
       LIST_DB: "true"
       DEBUGPY_ENABLE: "${DOODBA_DEBUGPY_ENABLE:-0}"
       PGDATABASE: &dbname devel

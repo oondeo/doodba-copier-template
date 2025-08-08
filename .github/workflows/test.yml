@@ -44,11 +44,12 @@ jobs:
           - 14.0
           - 15.0
           - 16.0
+          - 17.0
         include:
           - python-version: "3.10"
-            odoo-version: 17.0
+            odoo-version: 18.0
           - python-version: 3.11
-            odoo-version: 17.0
+            odoo-version: 18.0
         traefik_version:
           - 1
           - 2
@@ -74,7 +75,7 @@ jobs:
           sha256sum | cut -d' ' -f1) ${{ hashFiles('pyproject.toml') }} ${{
           hashFiles('poetry.lock') }} ${{ hashFiles('.pre-commit-config.yaml') }}" >>
           $GITHUB_ENV
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: |
             .cache.~

@@ -4,6 +4,7 @@ description = "Copier template to maintain Doodba integration projects"
 license = "BSL-1.0"
 name = "doodba-copier-template"
 version = "0.1.0"
+package-mode = false
 
 [tool.poetry.dependencies]
 copier = ">=9"
@@ -11,15 +12,15 @@ plumbum = "^1.9.0"
 python = "^3.8.1"
 
 [tool.poetry.dev-dependencies]
-black = "^23.12.1"
+black = "^24.8.0"
 flake8 = "^6.1.0"
 invoke = "^2.2.0"
-pylint = "^3.2.7"
-pytest = "^7.4.4"
-pytest-xdist = "^3.6.1"
-packaging = "^23.2"
-requests = "^2.32.4"
-pre-commit = "^3.5.0"
+pylint = "^3.0.2"
+pytest = "^7.4.0"
+pytest-xdist = "^3.3.1"
+packaging = "^23.1"
+requests = "^2.31.0"
+pre-commit = "^3.3.3"
 python-on-whales = "^0.78.0"
 
 [tool.isort]
