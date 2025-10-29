@@ -1,0 +1,16 @@
+#!/usr/bin/bash
+
+## TODO: no funciona cron
+## */5 *   * * *   root    /opt/odoo/custom/bin/odoo.sh
+PIDFILE="/opt/odoo/auto/odoo.pid"
+
+if [ -f /Envfile ]
+then
+    source /Envfile
+fi
+for database in $(psql -t -l | awk '{print $1}' | grep -v "Name" | grep -v "template0" | grep -v "template1" | grep -v "postgres" | grep -v "|")
+do
+    # su odoo -c "odoo --no-http --workers 0 --max-cron-threads 1 -d $database" &
+    odoo -c /opt/odoo/auto/odoo.conf --no-http --workers 0 --max-cron-threads 1 -d $database &
+    echo $! >> "$PIDFILE"
+done
