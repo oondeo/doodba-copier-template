@@ -1386,12 +1386,13 @@ def git_reset(c):
             c.cd(str(PROJECT_ROOT))
 
 
+
+
 @task
-def addons(c, output_file=None):
+def addons(c, database="", output_file=None):
     """
     Collect installed Odoo modules from all PostgreSQL databases,
     get their parent dir from symlink destination, and print as addons.yaml format.
-    Usage: invoke addons >> odoo/custom/src/addons.yaml
     """
     # Get list of databases (excluding templates and postgres)
     cmd_db_list = (
@@ -1402,6 +1403,8 @@ def addons(c, output_file=None):
         result = c.run(cmd_db_list, env=UID_ENV, hide=True)
         db_list = [db.strip() for db in result.stdout.splitlines() if db.strip()]
 
+    if database:
+        db_list = databse.split(",")
     modules_set = set()
     for db in db_list:
         cmd_modules = (
@@ -1425,13 +1428,13 @@ def addons(c, output_file=None):
             module = parts[-3]
             dest = parts[-1]
             parent_dir = dest.split("/")[-2] if "/" in dest else ""
-            module_dir_map[parent_dir] = module_dir_map.get(parent_dir, []) + [module]
+            if module in modules_set:
+                module_dir_map[parent_dir] = module_dir_map.get(parent_dir, []) + [module]
 
     # Prepare YAML output
     yaml_lines = ["---", "ONLY:", "  DOODBA_ENVIRONMENT: ['prod']"]
     for parent, modules in module_dir_map.items():
-        if parent in ["addons", "private"]:
-            continue
+        if parent in ["addons", "private"]: continue
         yaml_lines.append(f"{parent}:")
         for mod in modules:
             yaml_lines.append(f"  - {mod}")
