@@ -71,6 +71,7 @@ services:
               _key,
               odoo_version,
               paths_without_crawlers,
+              paths_with_crawlers,
               project_name,
             ) }}
       {%- elif traefik_version == 2 -%}
@@ -80,6 +81,7 @@ services:
               _key,
               odoo_version,
               paths_without_crawlers,
+              paths_with_crawlers,
               project_name,
             ) }}
       {%- else -%}
@@ -89,6 +91,7 @@ services:
               _key,
               odoo_version,
               paths_without_crawlers,
+              paths_with_crawlers,
               project_name,
             ) }}
       {%- endif %}

@@ -99,7 +99,7 @@ _migrations:
 odoo_version:
   help: On which odoo version is it based?
   type: float
-  default: 18.0
+  default: 19.0
   choices:
     - 7.0
     - 8.0
@@ -113,6 +113,7 @@ odoo_version:
     - 16.0
     - 17.0
     - 18.0
+    - 19.0
 
 target_odoo_version:
   help: On migrations final odoo version, leave default if you are not migrating
@@ -398,6 +399,17 @@ paths_without_crawlers:
     💡 We will convert this to `Path` rules. Check valid syntax in
     https://docs.traefik.io/routing/routers/#rule
 
+paths_with_crawlers:
+  multiline: true
+  default:
+    - /web/image/website
+  help: >-
+    Tell me the list of paths which where you want to allow crawlers and might get
+    blocked by the `paths_without_crawlers` setting.
+
+    💡 We will convert this to `Path` rules. Check valid syntax in
+    https://docs.traefik.io/routing/routers/#rule
+
 cidr_whitelist:
   multiline: true
   default: null
@@ -427,7 +439,7 @@ redis_version:
     "6.0.16": "6.0.16"
 
 postgres_version:
-  default: "16"
+  default: "17"
   help: >-
     Which PostgreSQL version do you want to deploy? (Recommended: for new instances
     always use the latest version. Version 9.6 has no backup support.)
@@ -441,12 +453,15 @@ postgres_version:
     "14": "14"
     "15": "15"
     "16": "16"
+    "17": "17"
   validator: >-
     {% if postgres_version|int > 0 %} {% if (odoo_version >= 16.0 and
     postgres_version|int < 12) or (odoo_version >= 14.0 and postgres_version|int < 10)
     %}  The postgres version is too low for the selected Odoo version. {% elif
     odoo_version <= 12.0 and postgres_version|int > 13 %}  The postgres version is too
-    high for the selected Odoo version. {% endif %} {% endif %}
+    high for the selected Odoo version. {% elif odoo_version <= 14.0 and
+    postgres_version|int > 16 %} The postgres version is too high for the selected Odoo
+    version. {% endif %} {% endif %}
 
 postgres_host:
   type: str
