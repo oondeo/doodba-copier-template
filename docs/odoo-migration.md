@@ -20,18 +20,24 @@
    cp):
 
 ```bash
-
+cd project
+invoke addons --database $database > ../addons-migration.yml
+cd ..
 cp project/.copier-answers.yml answers.yml
 mkdir odoo13
+cp addons-migration.yml odoo13
 sed 's/^odoo_version:.*/odoo_version: 13.0/' answers.yml > odoo13/.copier-answers.yml
 copier recopy --vcs-ref oondeo --trust -A odoo13
 mkdir odoo14
+cp addons-migration.yml odoo14
 sed 's/^odoo_version:.*/odoo_version: 14.0/' answers.yml > odoo14/.copier-answers.yml
 copier recopy --vcs-ref oondeo --trust -A odoo14
 mkdir odoo15
+cp addons-migration.yml odoo15
 sed 's/^odoo_version:.*/odoo_version: 15.0/' answers.yml > odoo15/.copier-answers.yml
 copier recopy --vcs-ref oondeo --trust -A odoo15
 mkdir odoo16
+cp addons-migration.yml odoo16
 sed 's/^odoo_version:.*/odoo_version: 16.0/' answers.yml > odoo16/.copier-answers.yml
 copier recopy --vcs-ref oondeo --trust -A  odoo16
 
