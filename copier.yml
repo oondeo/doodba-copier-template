@@ -414,7 +414,8 @@ paths_with_crawlers:
 
 cidr_whitelist:
   multiline: true
-  default: null
+  default: []
+  when: "{{ traefik_version and traefik_version != 3 }}"
   help: >-
     If you need to whitelist certain CIDR to allow only them to access your Odoo
     instance, set that here please.
@@ -509,7 +510,7 @@ postgres_exposed_port:
 
 postgres_cidr_whitelist:
   multiline: true
-  default: null
+  default: []
   when: *db_exposed
   help: >-
     If you need to whitelist certain CIDR to allow only them to access your Postgres
