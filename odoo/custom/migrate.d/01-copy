@@ -2,7 +2,7 @@
 
 ODOO_MOUNTPOINT="${ODOO_MOUNTPOINT:/mnt/odoo}"
 
-# set -e
+set -e
 
 if [ "$AUTOCOPY" == "true" ]
 then
@@ -19,6 +19,7 @@ fi
 if [ -d "/var/lib/odoo/filestore/${PGDATABASE}" ]
 then
     ## Exits end processing
+    log INFO Filestore for ${PGDATABASE} already exists
     exit 0
 fi
 ## Migrate database from OPENUPGRADE_BASE_DB to PGDATABASE
@@ -36,34 +37,41 @@ fi
 # restore from sql (to migrate between postgresql versions)
 if [ -f "/var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB}.sql" ]
 then
-    cp -a /var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB} /var/lib/odoo/filestore/${PGDATABASE}
-    psql -d "template1" -c "CREATE DATABASE '${PGDATABASE}' OWNER ${PGUSER}"
+    log INFO Restoring database from /var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB}.sql
+    psql -d "template1" -c "CREATE DATABASE \"${PGDATABASE}\" OWNER ${PGUSER}"
     psql -d "${PGDATABASE}" < "/var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB}.sql"
     psql -d "${PGDATABASE}" -c "VACUUM FULL;"
+    cp -a /var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB} /var/lib/odoo/filestore/${PGDATABASE}
     exit 0
 fi
 if [ -f "${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB}.sql" ]
 then
     log INFO Using ${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB}
-    cp -a ${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB} /var/lib/odoo/filestore/${PGDATABASE}
-    psql -d "template1" -c "CREATE DATABASE '${PGDATABASE}' OWNER ${PGUSER}"
+    psql -d "template1" -c "CREATE DATABASE \"${PGDATABASE}\" OWNER ${PGUSER}"
     psql -d  "${PGDATABASE}" < "${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB}.sql"
     psql -d "${PGDATABASE}" -c "VACUUM FULL;"
+    cp -a ${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB} /var/lib/odoo/filestore/${PGDATABASE}
     exit 0
 fi
 if [ -d "/var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB}" ]
 then
-    cp -a /var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB} /var/lib/odoo/filestore/${PGDATABASE}
-    psql -d "${OPENUPGRADE_BASE_DB}" -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${PGDATABASE}' AND leader_pid IS NULL;CREATE DATABASE ${PGDATABASE} WITH TEMPLATE '${OPENUPGRADE_BASE_DB}' OWNER ${PGUSER}"
+    log INFO Migrating database from /var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB}
+    psql -d "template1" -c "DROP DATABASE \"${PGDATABASE}\"" || true
+    psql -d "template1" -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${OPENUPGRADE_BASE_DB}' AND leader_pid IS NULL;" || true
+    echo "psql -d "template1" -c \"CREATE DATABASE \"${PGDATABASE}\" WITH TEMPLATE \"${OPENUPGRADE_BASE_DB}\" OWNER ${PGUSER};\""
+    psql -d "template1" -c "CREATE DATABASE \"${PGDATABASE}\" WITH TEMPLATE \"${OPENUPGRADE_BASE_DB}\" OWNER ${PGUSER}"
     psql -d "${PGDATABASE}" -c "VACUUM FULL;"
+    cp -a /var/lib/odoo/filestore/${OPENUPGRADE_BASE_DB} /var/lib/odoo/filestore/${PGDATABASE}
     exit 0
 fi
 if [ -d "${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB}" ]
 then
     log INFO Using ${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB}
-    cp -a ${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB} /var/lib/odoo/filestore/${PGDATABASE}
-    psql -d "template1" -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${OPENUPGRADE_BASE_DB}' AND leader_pid IS NULL;CREATE DATABASE '${PGDATABASE}' WITH TEMPLATE '${OPENUPGRADE_BASE_DB}' OWNER ${PGUSER}"
+    psql -d "template1" -c "DROP DATABASE \"${PGDATABASE}\";" || true
+    psql -d "template1" -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${OPENUPGRADE_BASE_DB}' AND leader_pid IS NULL;" || true
+    psql -d "template1" -c "CREATE DATABASE \"${PGDATABASE}\" WITH TEMPLATE \"${OPENUPGRADE_BASE_DB}\" OWNER ${PGUSER}"
     psql -d "${PGDATABASE}" -c "VACUUM FULL;"
+    cp -a ${ODOO_MOUNTPOINT}/filestore/${OPENUPGRADE_BASE_DB} /var/lib/odoo/filestore/${PGDATABASE}
     exit 0
 fi
 

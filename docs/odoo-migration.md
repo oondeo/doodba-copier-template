@@ -9,11 +9,12 @@
 # Odoo version migration
 
 1. Create your base project with copier, on questions ensure that ODOO_VERSION and
-   TARGET_ODOO_VERSION are set.
+   TARGET_ODOO_VERSION are set, dev_ip_address, postgres_dev_exposed, project_dbname and custom_filestore must be set
 2. docker compose up -d
 3. Restore your database and upgrade all modules
-4. invoke migrate-dump
-5. Create one project per odoo version to migrate and answer questions for each odoo
+4. Disable all custom views (withoud external id)
+5. invoke migrate-dump
+6. Create one project per odoo version to migrate and answer questions for each odoo
    version to jump. Example: if you are migrating to 16.0 from 12.0, you must create
    13.0, 14.0, 15.0 and 16.0 projects, TARGET_ODOO_VERSION always will be 16.0 and
    change ODOO_VERSION in each project. Example commands (change odoo_version before
@@ -22,6 +23,10 @@
 ```bash
 cd project
 invoke addons --database $database > ../addons-migration.yml
+invoke requirements > ../requirements.txt
+invoke build --pull
+invoke git-aggregate
+## actualizar plan de cuentas
 cd ..
 cp project/.copier-answers.yml answers.yml
 mkdir odoo13
@@ -53,7 +58,9 @@ copier recopy --vcs-ref oondeo --trust -A  odoo16
 
 ```bash
 cd odoo13
+invoke requirements > odoo/custom/dependencies/pip.txt
 invoke migrate-build
+invoke git-aggregate
 ```
 
 8. Launch migration:

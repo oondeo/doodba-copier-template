@@ -1268,7 +1268,7 @@ def migrate_build(c, pull=True):
 @task(check_openupgrade_volune)
 def migrate(c, detach=False, copy=False, agg=True):
     """Run migration."""
-    cmd = DOCKER_COMPOSE_CMD + " -f migrate.yaml up"
+    cmd = DOCKER_COMPOSE_CMD + " -f migrate.yaml run "
     if detach:
         cmd += " -d"
     if copy:
@@ -1279,9 +1279,9 @@ def migrate(c, detach=False, copy=False, agg=True):
         cmd += " -e AGGREGATE=false"
     else:
         cmd += " -e AGGREGATE=true"
+    cmd += " odoo"
     with c.cd(str(PROJECT_ROOT)):
         c.run(cmd, env=UID_ENV, pty=True)
-
 
 @task(check_openupgrade_volune)
 def migrate_dump(c):
@@ -1507,3 +1507,14 @@ def scaffold(
             env=UID_ENV,
             pty=True,
         )
+
+
+@task()
+def psql(c, exec=False, copy=False, agg=True):
+    """Run migration."""
+    cmd = DOCKER_COMPOSE_CMD + " run"
+    if exec:
+        cmd = DOCKER_COMPOSE_CMD + " exec"
+    cmd += " --entrypoint /bin/ssh odoo -c psql"
+    with c.cd(str(PROJECT_ROOT)):
+        c.run(cmd, env=UID_ENV, pty=True)

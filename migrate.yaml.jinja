@@ -13,6 +13,7 @@ version: "2.4"
 
 services:
   odoo:
+    # profiles: ["migrate"]
     {%- if odoo_oci_image and odoo_version >= 14 %}
     image: {{ odoo_oci_image }}:{{ macros.version_minor(odoo_version) }}
     {%- endif %}
@@ -31,7 +32,11 @@ services:
     networks:
       - public
     volumes:
+      {%- if custom_filestore and custom_filestore.startswith("/") %}
+      - {{ custom_filestore }}:/var/lib/odoo:rw,z
+      {%- else %}
       - openupgrade_filestore_{{ project_name }}:/var/lib/odoo:rw,z
+      {%- endif %}
       - ./odoo/custom:/opt/odoo/custom:rw,z
       - ./odoo/auto:/opt/odoo/auto:rw,z
     environment:
@@ -112,8 +117,8 @@ networks:
   public:
 
 volumes:
+  {%- if custom_filestore and not custom_filestore.startswith("/") %}
   openupgrade_filestore_{{ project_name }}:
-  {%- if custom_filestore %}
     external: true
     name: {{ custom_filestore }}
   {%- endif %}

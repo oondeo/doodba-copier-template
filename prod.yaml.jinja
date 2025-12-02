@@ -193,10 +193,6 @@ volumes:
   backup_cache:
   {%- endif %}
   filestore:
-  {% if custom_filestore %}
-    external: true
-    name: {{ custom_filestore }}
-  {% endif %}
   db:
   {%- if smtp_relay_host %}
   mailconfig:

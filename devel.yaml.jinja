@@ -104,7 +104,11 @@ services:
     volumes:
       - ./odoo/custom:/opt/odoo/custom:rw,z
       - ./odoo/auto:/opt/odoo/auto:rw,z
-      {% if not custom_filestore %}
+      {%- if custom_filestore and custom_filestore.startswith("/") %}
+      - {{ custom_filestore }}:/var/lib/odoo:rw,z
+      {% elif custom_filestore %}
+      - filestore:/var/lib/odoo:rw,z
+      {%- else %}
       - ./odoo/auto/storage/filestore:/var/lib/odoo:rw,z
       {% endif %}
     depends_on:
@@ -152,14 +156,14 @@ services:
     depends_on:
       - db
 
-  {%- if postgres_dev_exposed %}
+  {%- if postgres_dev_exposed > 0 %}
   db_proxy:
     image: tecnativa/whitelist
     depends_on:
       - db
     networks: *public
     ports:
-      - "{{ dev_ip_address }}:{{ postgres_exposed_port }}:5432"
+      - "{{ dev_ip_address }}:{{ postgres_dev_exposed }}:5432"
     environment:
       PORT: "5432"
       TARGET: db
@@ -209,7 +213,7 @@ networks:
 
 volumes:
   filestore:
-  {% if custom_filestore %}
+  {% if custom_filestore and not custom_filestore.startswith("/") %}
     external: true
     name: {{ custom_filestore }}
   {% endif %}
